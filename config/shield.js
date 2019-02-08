@@ -1,4 +1,6 @@
-'use strict'
+"use strict";
+
+const escapeUris = ["/api/v1/login", "/api/v1/me"];
 
 module.exports = {
   /*
@@ -27,8 +29,7 @@ module.exports = {
     | }
     |
     */
-    directives: {
-    },
+    directives: {},
     /*
     |--------------------------------------------------------------------------
     | Report only
@@ -95,7 +96,7 @@ module.exports = {
   |
   | Learn more at https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
   */
-  xframe: 'DENY',
+  xframe: "DENY",
 
   /*
   |--------------------------------------------------------------------------
@@ -133,13 +134,13 @@ module.exports = {
   */
   csrf: {
     enable: true,
-    methods: ['POST', 'PUT', 'DELETE'],
-    filterUris: [],
+    methods: ["POST", "PUT", "DELETE"],
+    filterUris: ["/api/v1/login"],
     cookieOptions: {
       httpOnly: false,
       sameSite: true,
-      path: '/',
+      path: "/",
       maxAge: 7200
     }
   }
-}
+};
