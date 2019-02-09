@@ -1,6 +1,6 @@
 "use strict";
 
-const escapeUris = ["/api/v1/login", "/api/v1/me"];
+const escapeUris = ["/api/v1/login", "/api/v1/me", "/api/v1/products"];
 
 module.exports = {
   /*
