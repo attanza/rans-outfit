@@ -11,7 +11,7 @@ module.exports = async (request, e) => {
       method: request.method(),
       error: e.message
     });
-    const subject = `langsungjalan error: ${request.method()} ${request.url()}`;
+    const subject = `ransoutfit error: ${request.method()} ${request.url()}`;
     MailHelper.sendError(subject, e);
   }
 };

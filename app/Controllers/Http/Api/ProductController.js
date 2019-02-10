@@ -1,7 +1,8 @@
 "use strict";
 
 const Product = use("App/Models/Product");
-const { ResponseParser, ErrorLog } = use("App/Helpers");
+
+const { ResponseParser, ErrorLog, RedisHelper } = use("App/Helpers");
 const fillable = [
   "name",
   "product_category_id",
@@ -14,7 +15,8 @@ const fillable = [
   "ordering",
   "tags",
   "is_featured",
-  "is_publish"
+  "is_publish",
+  "material"
 ];
 
 class ProductController {
@@ -43,6 +45,7 @@ class ProductController {
       if (!sort_mode) sort_mode = "desc";
 
       const data = await Product.query()
+        .with("stockStatus")
         .where(function() {
           if (search && search != "") {
             this.where("name", "like", `%${search}%`);
@@ -74,18 +77,32 @@ class ProductController {
    * Can only be done by Super Administrator
    */
 
-  async store({ request, response, auth }) {
+  async store({ request, response }) {
     try {
       let body = request.only(fillable);
+      console.log("body.tags", body.tags);
+
       const data = await Product.create(body);
+      const { short_description, long_description } = request.post();
+      if (short_description || long_description) {
+        await data
+          .descriptions()
+          .create({ short_description, long_description });
+      }
+      const { attributes } = request.post();
+      if (attributes) {
+        await data.attributes().createMany(attributes);
+      }
+      const { shipping } = request.post();
+      if (shipping) {
+        await data.shipping().create(shipping);
+      }
       await RedisHelper.delete("Product_*");
-      await RedisHelper.delete("Dashboard_Data");
-      await RedisHelper.delete("StudyProgram_*");
-      const activity = `Add new Product '${data.name}'`;
-      await ActivityTraits.saveActivity(request, auth, activity);
       let parsed = ResponseParser.apiCreated(data.toJSON());
       return response.status(201).send(parsed);
     } catch (e) {
+      console.log("e", e);
+
       ErrorLog(request, e);
       return response.status(500).send(ResponseParser.unknownError());
     }

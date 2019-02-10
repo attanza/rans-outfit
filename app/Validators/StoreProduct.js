@@ -6,6 +6,7 @@ const messages = require("./messages");
 class StoreProduct {
   get rules() {
     return {
+      code: "required|max:100|unique:products",
       name: "required|max:100|unique:products",
       product_category_id: "required|integer",
       code: "string|max:20",
@@ -15,9 +16,14 @@ class StoreProduct {
       tax: "integer",
       stock: "integer",
       ordering: "integer",
-      tags: "string",
+      tags: "max:250",
       is_featured: "boolean",
-      is_publish: "boolean"
+      is_publish: "boolean",
+      material: "string|max:250",
+      attributes: "array",
+      "attributes.*.name": "required_if:attributes",
+      "attributes.*.value": "required_if:attributes",
+      shipping: "object"
     };
   }
 
@@ -36,7 +42,6 @@ class StoreProduct {
       tax: "toInt",
       stock: "toInt",
       ordering: "toInt",
-      tags: "toInt",
       is_featured: "toBoolean",
       is_publish: "toBoolean"
     };

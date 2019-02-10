@@ -24,6 +24,7 @@ class ProductSchema extends Schema {
       table.integer("stock");
       table.integer("stock_status_id").default(1);
       table.integer("ordering");
+      table.string("material");
       table.text("tags");
       table.timestamp("deleted_at").nullable();
       table.boolean("is_featured").default(false);

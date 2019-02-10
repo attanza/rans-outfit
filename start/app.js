@@ -23,7 +23,8 @@ const providers = [
   "adonis-acl/providers/AclProvider",
   "@adonisjs/lucid-slugify/providers/SlugifyProvider",
   "@adonisjs/validator/providers/ValidatorProvider",
-  "@adonisjs/mail/providers/MailProvider"
+  "@adonisjs/mail/providers/MailProvider",
+  "@adonisjs/redis/providers/RedisProvider"
 ];
 
 /*

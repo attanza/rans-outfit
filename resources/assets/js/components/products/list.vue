@@ -25,12 +25,18 @@
       >
         <template slot="items" slot-scope="props">
           <td>
-            <a @click="toDetail(props.item)">{{ props.item.name }}</a>
+            <a @click="toDetail(props.item)">{{ props.item.code }}</a>
           </td>
-          <td class="text-xs-left">{{ props.item.contact_person }}</td>
-          <td class="text-xs-left">{{ props.item.phone }}</td>
-          <td class="text-xs-left">{{ props.item.email }}</td>
-          <td class="text-xs-left">{{ props.item.city }}</td>
+          <td>{{ props.item.name }}</td>
+          <td>{{ props.item.stock }}</td>
+          <td>{{ props.item.regular_price }}</td>
+          <td>{{ props.item.sell_price }}</td>
+          <td>
+            <v-checkbox :input-value="props.item.is_publish" hide-details color="primary"/>
+          </td>
+          <td>
+            <v-checkbox :input-value="props.item.is_featured" hide-details color="primary"/>
+          </td>
         </template>
       </v-data-table>
     </v-card>
@@ -53,9 +59,11 @@ export default {
     headers: [
       { text: "Code", align: "left", value: "code" },
       { text: "Name", value: "name", align: "left" },
-      { text: "Category", value: "category", align: "left" },
+      { text: "Stock", value: "category", align: "left" },
       { text: "Regular Price", value: "regular_price", align: "left" },
-      { text: "Sell Price", value: "sell_price", align: "left" }
+      { text: "Sell Price", value: "sell_price", align: "left" },
+      { text: "Publish", value: "is_publish", align: "left" },
+      { text: "Featured", value: "is_featured", align: "left" }
     ],
     items: [],
     showForm: true

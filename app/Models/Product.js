@@ -8,19 +8,22 @@ const uid = new ShortUniqueId();
 class Product extends Model {
   static boot() {
     super.boot();
-    this.addHook("beforeSave", async userInstance => {
-      if (userInstance.dirty.password) {
-        userInstance.password = await Hash.make(userInstance.password);
-        userInstance.id = await uid.randomUUID(24);
-      }
+
+    this.addHook("beforeSave", async productInstance => {
+      productInstance.id = await uid.randomUUID(24);
     });
+
     this.addTrait("@provider:Lucid/Slugify", {
-      fields: {
-        slug: "name"
-      },
+      fields: { slug: "name" },
       strategy: "dbIncrement",
       disableUpdates: false
     });
+
+    this.addTrait("@provider:Lucid/SoftDeletes");
+  }
+
+  static get incrementing() {
+    return false;
   }
 
   stockStatus() {
@@ -36,7 +39,7 @@ class Product extends Model {
   }
 
   shipping() {
-    return this.belongsTo("App/Models/ProductShipping");
+    return this.hasOne("App/Models/ProductShipping");
   }
 
   attributes() {

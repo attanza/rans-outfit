@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-navigation-drawer v-model="drawer" :mini-variant.sync="mini" fixed app>
-      <v-toolbar flat>
+      <v-toolbar flat color="primary" dark>
         <v-list class="pa-0">
           <v-list-tile>
             <v-list-tile-content v-if="!mini">
@@ -44,7 +44,7 @@
         </div>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar fixed app>
+    <v-toolbar fixed app color="primary" dark flat>
       <v-toolbar-side-icon @click="drawer = !drawer"/>
       <v-spacer/>
       <v-toolbar-items>
