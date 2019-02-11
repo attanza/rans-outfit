@@ -52,6 +52,14 @@ Route.group(() => {
           ["StoreProductAttribute"]
         ]
       ])
+    )
+    .middleware(
+      new Map([
+        [["product-attributes.index"], ["can:read-product-attribute"]],
+        [["product-attributes.store"], ["can:create-product-attribute"]],
+        [["product-attributes.update"], ["can:update-product-attribute"]],
+        [["product-attributes.destroy"], ["can:delete-product-attribute"]]
+      ])
     );
 })
   .prefix("api/v1")

@@ -80,7 +80,7 @@ class ProductAttributeController {
       const { product_id, attributes } = request.post();
       if (attributes && attributes.length) {
         for (let i = 0; i < attributes.length; i++) {
-          await createAttribute({
+          await this.createAttribute({
             product_id,
             name: attributes[i].name,
             value: attributes[i].value
@@ -88,11 +88,11 @@ class ProductAttributeController {
         }
       } else {
         const body = request.only(fillable);
-        await createAttribute(body);
+        await this.createAttribute(body);
       }
 
       await RedisHelper.delete("ProductAttribute_*");
-      let parsed = ResponseParser.apiCreated(data.toJSON());
+      let parsed = ResponseParser.apiCreated();
       return response.status(201).send(parsed);
     } catch (e) {
       ErrorLog(request, e);
@@ -134,12 +134,12 @@ class ProductAttributeController {
    * Update ProductAttribute by Id
    * Can only be done by Super Administrator
    */
-  async update({ request, response, auth }) {
+  async update({ request, response }) {
     try {
       let body = request.only(fillable);
       const id = request.params.id;
       const data = await ProductAttribute.find(id);
-      if (!data || data.length === 0) {
+      if (!data) {
         return response.status(400).send(ResponseParser.apiNotFound());
       }
       await data.merge(body);
@@ -163,6 +163,9 @@ class ProductAttributeController {
     try {
       const id = request.params.id;
       const data = await ProductAttribute.find(id);
+      if (!data) {
+        return response.status(400).send(ResponseParser.apiNotFound());
+      }
       await RedisHelper.delete("ProductAttribute_*");
       await data.delete();
       return response.status(200).send(ResponseParser.apiDeleted());
