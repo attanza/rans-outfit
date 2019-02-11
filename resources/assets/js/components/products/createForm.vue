@@ -5,7 +5,9 @@
       <v-divider></v-divider>
       <v-stepper-step :complete="e1 > 2" step="2">Descriptions</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step step="3">Attributes</v-stepper-step>
+      <v-stepper-step :complete="e1 > 3" step="3">Attributes</v-stepper-step>
+      <v-divider></v-divider>
+      <v-stepper-step :complete="e1 > 4" step="4">Media Upload</v-stepper-step>
     </v-stepper-header>
 
     <v-stepper-items>
@@ -18,7 +20,11 @@
       </v-stepper-content>
 
       <v-stepper-content step="3">
-        <attributes @onSaveAttribute="toList"/>
+        <attributes @onSaveAttribute="e1 = 4"/>
+      </v-stepper-content>
+
+      <v-stepper-content step="4">
+        <upload-media @onUploaded="toList"/>
       </v-stepper-content>
     </v-stepper-items>
   </v-stepper>
@@ -27,12 +33,13 @@
 import productForm from "./productForm";
 import description from "./description";
 import attributes from "./attributes";
+import uploadMedia from "./uploadMedia";
 
 export default {
-  components: { productForm, description, attributes },
+  components: { productForm, description, attributes, uploadMedia },
   data() {
     return {
-      e1: 0
+      e1: 4
     };
   },
   methods: {

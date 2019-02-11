@@ -25,7 +25,7 @@ class ExceptionHandler extends BaseExceptionHandler {
     // console.log("error.name", error.name);
     // console.log("message", error.message);
     // console.log("status", error.status);
-    console.log("code", error.code);
+    // console.log("code", error.code);
     // console.log("status", error.status);
 
     const url = request.url();

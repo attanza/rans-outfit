@@ -66,6 +66,25 @@ Route.group(() => {
         [["product-attributes.destroy"], ["can:delete-product-attribute"]]
       ])
     );
+
+  Route.resource("product-medias", "ProductMediaController")
+    .apiOnly()
+    .validator(
+      new Map([
+        [
+          ["product-medias.store", "product-medias.update"],
+          ["StoreProductMedia"]
+        ]
+      ])
+    )
+    .middleware(
+      new Map([
+        [["product-medias.index"], ["can:read-product-media"]],
+        [["product-medias.store"], ["can:create-product-media"]],
+        [["product-medias.update"], ["can:update-product-media"]],
+        [["product-medias.destroy"], ["can:delete-product-media"]]
+      ])
+    );
 })
   .prefix("api/v1")
   .namespace("Api")

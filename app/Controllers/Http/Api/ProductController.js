@@ -1,7 +1,6 @@
 "use strict";
 
 const Product = use("App/Models/Product");
-
 const { ResponseParser, ErrorLog, RedisHelper } = use("App/Helpers");
 const fillable = [
   "name",

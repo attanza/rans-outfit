@@ -8,9 +8,11 @@ class ProductMediaSchema extends Schema {
     this.create("product_medias", table => {
       table.increments();
       table.uuid("product_id");
-      table.string("name", 100);
       table.string("type", 20);
       table.string("caption", 100);
+      table.string("url");
+      table.boolean("is_main").default(0);
+      table.boolean("is_publish").default(0);
       table.string("description");
       table.timestamps();
     });

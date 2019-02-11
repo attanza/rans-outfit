@@ -4,11 +4,13 @@ const User = use("App/Models/User");
 const changeCase = require("change-case");
 const Database = use("Database");
 const roles = ["Administrator"];
+const { RedisHelper } = use("App/Helpers");
 
 class UserSeeder {
   async run() {
     await Database.table("users").truncate();
     await Database.table("tokens").truncate();
+    await RedisHelper.clear();
     for (let i = 0; i < roles.length; i++) {
       let userData = {
         name: roles[i],

@@ -5,6 +5,7 @@ import axios from "axios";
 import * as components from "./components";
 import store from "./store";
 import CKEditor from "@ckeditor/ckeditor5-vue";
+import "vue2-dropzone/dist/vue2Dropzone.css";
 
 window.Vue = Vue;
 
