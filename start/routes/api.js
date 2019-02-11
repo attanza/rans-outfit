@@ -2,6 +2,11 @@ const Route = use("Route");
 
 Route.group(() => {
   Route.post("login", "AuthController.login");
+})
+  .prefix("api/v1")
+  .namespace("Api");
+
+Route.group(() => {
   Route.post("logout", "AuthController.logout");
   Route.get("me", "AuthController.me");
 

@@ -86,6 +86,8 @@ export default {
         }
         this.deactivateLoader();
       } catch (e) {
+        console.log("e", e);
+
         this.deactivateLoader();
         showNoty("Login failed", "error");
       }

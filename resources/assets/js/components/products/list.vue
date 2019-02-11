@@ -9,7 +9,7 @@
           icon-mode
           color="primary"
           icon="add"
-          @onClick="showForm = true"
+          @onClick="handleAdd"
         />
         <v-spacer/>
         <v-text-field
@@ -124,6 +124,9 @@ export default {
 
         catchError(e);
       }
+    },
+    handleAdd() {
+      window.location.replace("/admin/products/create");
     },
     toDetail(data) {
       window.location.replace("/admin/products/" + data.id);

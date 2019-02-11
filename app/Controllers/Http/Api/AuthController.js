@@ -1,6 +1,6 @@
 "use strict";
 
-const { ResponseParser } = use("App/Helpers");
+const { ResponseParser, ErrorLog } = use("App/Helpers");
 
 class AuthController {
   async login({ request, response, auth }) {
@@ -13,7 +13,8 @@ class AuthController {
         .status(200)
         .send(ResponseParser.successResponse(true, "Login success"));
     } catch (e) {
-      return response.status(401).send(ResponseParser.unauthorizedResponse());
+      ErrorLog(request, e);
+      return response.status(500).send(ResponseParser.unknownError());
     }
   }
 
@@ -25,15 +26,19 @@ class AuthController {
         .status(200)
         .send(ResponseParser.successResponse(true, "Logout success"));
     } catch (e) {
-      console.log("e", e);
-
-      return response.status(401).send(ResponseParser.unauthorizedResponse());
+      ErrorLog(request, e);
+      return response.status(500).send(ResponseParser.unknownError());
     }
   }
 
   async me({ response, auth }) {
-    const user = await auth.getUser();
-    return response.status(200).send(ResponseParser.apiItem(user));
+    try {
+      const user = await auth.getUser();
+      return response.status(200).send(ResponseParser.apiItem(user));
+    } catch (e) {
+      ErrorLog(request, e);
+      return response.status(500).send(ResponseParser.unknownError());
+    }
   }
 }
 
