@@ -4,6 +4,8 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
+const Product = use("App/Models/Product");
+const { RedisHelper, ResponseParser } = use("App/Helpers");
 /**
  * Resourceful controller for interacting with products
  */
@@ -53,7 +55,29 @@ class ProductController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show({ params, request, response, view }) {}
+  async show({ params, response, view }) {
+    const { id } = params;
+    const redisKey = `Product_${id}`;
+    const cached = await RedisHelper.get(redisKey);
+    if (cached) {
+      return view.render("product.show", { id: cached.data.id });
+    }
+    const data = await Product.find(id);
+    if (!data) {
+      return response.redirect("/admin/products");
+    }
+    await data.loadMany([
+      "stockStatus",
+      "description",
+      "category",
+      "shipping",
+      "attributes",
+      "medias"
+    ]);
+    const parsed = ResponseParser.apiItem(data);
+    await RedisHelper.set(redisKey, parsed);
+    return view.render("product.show", { id: data.id });
+  }
 
   /**
    * Render a form to update an existing product.

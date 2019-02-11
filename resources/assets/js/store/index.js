@@ -5,11 +5,19 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    count: 0
+    currentEdit: null,
+    stockStatus: null,
+    productCategories: null
   },
   mutations: {
-    increment(state) {
-      state.count++;
+    currentEdit(state, val) {
+      state.currentEdit = val;
+    },
+    stockStatus(state, val) {
+      state.stockStatus = val;
+    },
+    productCategories(state, val) {
+      state.productCategories = val;
     }
   }
 });

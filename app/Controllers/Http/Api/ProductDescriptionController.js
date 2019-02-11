@@ -1,25 +1,11 @@
 "use strict";
 
-const Product = use("App/Models/Product");
+const ProductDescription = use("App/Models/ProductDescription");
 
 const { ResponseParser, ErrorLog, RedisHelper } = use("App/Helpers");
-const fillable = [
-  "name",
-  "product_category_id",
-  "code",
-  "regular_price",
-  "sell_price",
-  "discount",
-  "tax",
-  "stock",
-  "ordering",
-  "tags",
-  "is_featured",
-  "is_publish",
-  "material"
-];
+const fillable = ["product_id", "short_description", "long_description"];
 
-class ProductController {
+class ProductDescriptionController {
   /**
    * Index
    * Get List of Universities
@@ -36,7 +22,8 @@ class ProductController {
         start_date,
         end_date,
         sort_by,
-        sort_mode
+        sort_mode,
+        product_id
       } = request.get();
 
       if (!page) page = 1;
@@ -44,24 +31,26 @@ class ProductController {
       if (!sort_by) sort_by = "id";
       if (!sort_mode) sort_mode = "desc";
 
-      const redisKey = `Product_${page || ""}${limit || ""}${sort_by ||
-        ""}${sort_mode || ""}${search_by || ""}${search_query ||
-        ""}${between_date || ""}${start_date || ""}${end_date || ""}`;
+      const redisKey = `ProductDescription_${page || ""}${limit ||
+        ""}${sort_by || ""}${sort_mode || ""}${search_by || ""}${search_query ||
+        ""}${between_date || ""}${start_date || ""}${end_date ||
+        ""}${product_id || ""}`;
 
       let cached = await RedisHelper.get(redisKey);
 
       if (cached && !search) {
         return cached;
       }
-      const data = await Product.query()
+      const data = await ProductDescription.query()
         .with("stockStatus")
         .where(function() {
           if (search && search != "") {
-            this.where("name", "like", `%${search}%`);
-            this.orWhere("code", "like", `%${search}%`);
-            this.orWhere("stock", "like", `%${search}%`);
-            this.orWhere("regular_price", "like", `%${search}%`);
-            this.orWhere("sell_price", "like", `%${search}%`);
+            this.where("short_description", "like", `%${search}%`);
+            this.orWhere("long_description", "like", `%${search}%`);
+          }
+
+          if (product_id) {
+            this.where("product_id", product_id);
           }
 
           if (search_by && search_query) {
@@ -88,31 +77,16 @@ class ProductController {
 
   /**
    * Store
-   * Store New Products
+   * Store New ProductDescriptions
    * Can only be done by Super Administrator
    */
 
   async store({ request, response }) {
     try {
       let body = request.only(fillable);
-      const data = await Product.create(body);
-      const { short_description, long_description } = request.post();
-      if (short_description || long_description) {
-        await data
-          .description()
-          .create({ short_description, long_description });
-      }
-      const { attributes } = request.post();
-      if (attributes) {
-        await data.attributes().createMany(attributes);
-      }
-      const { shipping } = request.post();
-      if (shipping) {
-        await data.shipping().create(shipping);
-      }
-      await RedisHelper.delete("Product_*");
-      await data.load("stockStatus");
+      const data = await ProductDescription.create(body);
       let parsed = ResponseParser.apiCreated(data.toJSON());
+      await RedisHelper.delete("ProductDescription_*");
       return response.status(201).send(parsed);
     } catch (e) {
       ErrorLog(request, e);
@@ -122,17 +96,17 @@ class ProductController {
 
   /**
    * Show
-   * Product by id
+   * ProductDescription by id
    */
   async show({ request, response }) {
     try {
       const id = request.params.id;
-      let redisKey = `Product_${id}`;
+      let redisKey = `ProductDescription_${id}`;
       let cached = await RedisHelper.get(redisKey);
       if (cached) {
         return response.status(200).send(cached);
       }
-      const data = await Product.find(id);
+      const data = await ProductDescription.find(id);
       if (!data) {
         return response.status(400).send(ResponseParser.apiNotFound());
       }
@@ -147,20 +121,20 @@ class ProductController {
 
   /**
    * Update
-   * Update Product by Id
+   * Update ProductDescription by Id
    * Can only be done by Super Administrator
    */
-  async update({ request, response }) {
+  async update({ request, response, auth }) {
     try {
       let body = request.only(fillable);
       const id = request.params.id;
-      const data = await Product.find(id);
+      const data = await ProductDescription.find(id);
       if (!data) {
         return response.status(400).send(ResponseParser.apiNotFound());
       }
       await data.merge(body);
       await data.save();
-      await RedisHelper.delete("Product_*");
+      await RedisHelper.delete("ProductDescription_*");
       let parsed = ResponseParser.apiUpdated(data.toJSON());
       return response.status(200).send(parsed);
     } catch (e) {
@@ -171,18 +145,18 @@ class ProductController {
 
   /**
    * Delete
-   * Delete Product by Id
+   * Delete ProductDescription by Id
    * Can only be done by Super Administrator
-   * Default Product ['Super Administrator', 'Administrator', 'Supervisor', 'Marketing', 'Student'] cannot be deleted
+   * Default ProductDescription ['Super Administrator', 'Administrator', 'Supervisor', 'Marketing', 'Student'] cannot be deleted
    */
-  async destroy({ request, response }) {
+  async destroy({ request, response, auth }) {
     try {
       const id = request.params.id;
-      const data = await Product.find(id);
+      const data = await ProductDescription.find(id);
       if (!data) {
         return response.status(400).send(ResponseParser.apiNotFound());
       }
-      await RedisHelper.delete("Product_*");
+      await RedisHelper.delete("ProductDescription_*");
       await data.delete();
       return response.status(200).send(ResponseParser.apiDeleted());
     } catch (e) {
@@ -192,4 +166,4 @@ class ProductController {
   }
 }
 
-module.exports = ProductController;
+module.exports = ProductDescriptionController;

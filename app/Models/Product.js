@@ -30,8 +30,8 @@ class Product extends Model {
     return this.belongsTo("App/Models/StockStatus");
   }
 
-  descriptions() {
-    return this.hasMany("App/Models/ProductDescription");
+  description() {
+    return this.hasOne("App/Models/ProductDescription");
   }
 
   category() {
@@ -46,8 +46,8 @@ class Product extends Model {
     return this.hasMany("App/Models/ProductAttribute");
   }
 
-  materials() {
-    return this.belongsToMany("App/Models/ProductMaterial");
+  medias() {
+    return this.hasMany("App/Models/ProductMedia");
   }
 }
 

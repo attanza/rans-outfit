@@ -24,7 +24,8 @@ const providers = [
   "@adonisjs/lucid-slugify/providers/SlugifyProvider",
   "@adonisjs/validator/providers/ValidatorProvider",
   "@adonisjs/mail/providers/MailProvider",
-  "@adonisjs/redis/providers/RedisProvider"
+  "@adonisjs/redis/providers/RedisProvider",
+  "@adonisjs/vow/providers/VowProvider"
 ];
 
 /*

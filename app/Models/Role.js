@@ -14,6 +14,10 @@ class Role extends Model {
       disableUpdates: true
     });
   }
+
+  permissions() {
+    return this.belongsToMany("App/Models/Permission");
+  }
 }
 
 module.exports = Role;

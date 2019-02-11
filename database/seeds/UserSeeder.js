@@ -9,8 +9,6 @@ class UserSeeder {
   async run() {
     await Database.table("users").truncate();
     await Database.table("tokens").truncate();
-    await Database.table("role_user").truncate();
-
     for (let i = 0; i < roles.length; i++) {
       let userData = {
         name: roles[i],
@@ -20,6 +18,9 @@ class UserSeeder {
       };
       await User.create(userData);
     }
+
+    const user = await User.first();
+    user.roles().attach([1]);
   }
 }
 

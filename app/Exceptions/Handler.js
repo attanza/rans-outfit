@@ -20,19 +20,42 @@ class ExceptionHandler extends BaseExceptionHandler {
    *
    * @return {void}
    */
-  async handle(error, { response }) {
+  async handle(error, { response, request }) {
     // console.log("error", error);
     // console.log("error.name", error.name);
     // console.log("message", error.message);
     // console.log("status", error.status);
-    // console.log("code", error.code);
+    console.log("code", error.code);
     // console.log("status", error.status);
+
+    const url = request.url();
+    const urlSplit = url.split("/");
+
+    if (error.code === "E_ROUTE_NOT_FOUND") {
+      if (urlSplit && urlSplit[1] === "api") {
+        return response.status(401).send({
+          meta: {
+            status: 404,
+            message: "Route not found"
+          }
+        });
+      }
+      return response.redirect("/");
+    }
 
     if (error.code === "E_GUEST_ONLY") {
       return response.redirect("/admin");
     }
 
     if (error.name === "InvalidSessionException") {
+      if (urlSplit && urlSplit[1] === "api") {
+        return response.status(401).send({
+          meta: {
+            status: 401,
+            message: "Unathorized"
+          }
+        });
+      }
       return response.redirect("/admin/login");
     }
 

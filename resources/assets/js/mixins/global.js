@@ -1,6 +1,5 @@
 import changeCase from "change-case";
 import { mapState } from "vuex";
-import axios from "axios";
 import Noty from "../components/Noty";
 import Tbtn from "../components/Tbtn";
 import { ExportToCsv } from "export-to-csv";
@@ -32,9 +31,6 @@ export default {
       showDownloadDialog: false
     };
   },
-  mounted() {
-    this.setAuth();
-  },
 
   methods: {
     inArray(keys, searchedKey) {
@@ -51,12 +47,6 @@ export default {
     },
     setSnakeCase(txt) {
       return changeCase.snakeCase(txt);
-    },
-    setAuth() {
-      if (this.token) {
-        axios.defaults.headers.common["Authorization"] = `Bearer ${this.token}`;
-        axios.defaults.headers.post["Content-Type"] = "application/json";
-      }
     },
     activateLoader() {
       this.$bus.$emit("activate_loader");
@@ -110,9 +100,13 @@ export default {
         sort_mode: null
       };
     },
-    clearStore() {}
+    clearStore() {
+      this.$store.commit("currentEdit", null);
+      this.$store.commit("stockStatus", null);
+      this.$store.commit("productCategories", null);
+    }
   },
   computed: {
-    ...mapState([])
+    ...mapState(["currentEdit", "stockStatus", "productCategories"])
   }
 };

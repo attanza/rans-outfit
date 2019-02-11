@@ -29,11 +29,11 @@
                       :type="inArray(typeNumbers, f.key) ? 'number': 'text'"
                     />
                   </div>
-                  <div v-if="f.key === 'product_category_id' && categories">
+                  <div v-if="f.key === 'product_category_id' && productCategories">
                     <label>{{ f.caption }}</label>
                     <v-autocomplete
                       v-validate="f.rules"
-                      :items="categories"
+                      :items="productCategories"
                       :error-messages="errors.collect(f.key)"
                       :data-vv-name="f.key"
                       :data-vv-as="f.caption"
@@ -177,139 +177,19 @@
 </template>
 <script>
 import { PRODUCT_URL, COMBO_DATA_URL } from "../../utils/apis";
-import catchError from "../../utils/catchError";
-import { global } from "../../mixins";
+import catchError, { showNoty } from "../../utils/catchError";
+import { global, product } from "../../mixins";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 export default {
   $_veeValidate: {
     validator: "new"
   },
-  mixins: [global],
+  mixins: [global, product],
   props: {
     show: {
       type: Boolean,
       required: true
     }
-  },
-  data() {
-    return {
-      title: "Add Product",
-      dialog: false,
-      fillable: [
-        {
-          key: "code",
-          caption: "Product Code",
-          value: "",
-          rules: "required|max:50"
-        },
-        {
-          key: "product_category_id",
-          caption: "Category",
-          value: "",
-          rules: "required|integer"
-        },
-        {
-          key: "name",
-          caption: "Product Name",
-          value: "",
-          rules: "required|max:50"
-        },
-        {
-          key: "material",
-          caption: "Product Material",
-          value: "",
-          rules: "max:250"
-        },
-        {
-          key: "regular_price",
-          caption: "Regular Price",
-          value: "",
-          rules: "required|integer"
-        },
-        {
-          key: "sell_price",
-          caption: "Sell Price",
-          value: "",
-          rules: "integer"
-        },
-        {
-          key: "discount",
-          caption: "Discount",
-          value: "",
-          rules: "integer"
-        },
-        {
-          key: "tax",
-          caption: "Tax",
-          value: "",
-          rules: "integer"
-        },
-        {
-          key: "stock",
-          caption: "Stock",
-          value: "",
-          rules: "integer"
-        },
-        {
-          key: "ordering",
-          caption: "Menu Ordering",
-          value: "",
-          rules: "integer"
-        },
-        {
-          key: "stock_status_id",
-          caption: "Stock Status",
-          value: "",
-          rules: "required|integer"
-        },
-        {
-          key: "is_featured",
-          caption: "Make featured",
-          value: "",
-          rules: ""
-        },
-        {
-          key: "is_publish",
-          caption: "Publish",
-          value: "",
-          rules: ""
-        }
-      ],
-      formData: {},
-      stockStatus: [],
-      categories: [],
-      typeNumbers: [
-        "regular_price",
-        "sell_price",
-        "discount",
-        "tax",
-        "stock",
-        "ordering"
-      ],
-      notInclude: [
-        "product_category_id",
-        "stock_status_id",
-        "is_featured",
-        "is_publish"
-      ],
-      editor: ClassicEditor,
-      editorConfig: {
-        toolbar: [
-          "heading",
-          "|",
-          "bold",
-          "italic",
-          "bulletedList",
-          "numberedList",
-          "blockQuote"
-        ]
-      },
-      attributeNames: ["color", "size"],
-      attributeName: "",
-      attributeValue: "",
-      attributes: [],
-      shipping: {}
-    };
   },
   watch: {
     show() {
@@ -319,18 +199,21 @@ export default {
   mounted() {
     this.initData();
   },
+  beforeDestroy() {
+    this.$store.commit("currentEdit", null);
+  },
   methods: {
     async initData() {
       try {
         const comboDataResponse = await axios
           .get(`${COMBO_DATA_URL}?resource=StockStatus`)
           .then(res => res.data);
-        this.stockStatus = comboDataResponse.data;
+        this.$store.commit("stockStatus", comboDataResponse.data);
 
         const categoryResponse = await axios
           .get(`${COMBO_DATA_URL}?resource=ProductCategory&sort_by=name`)
           .then(res => res.data);
-        this.categories = categoryResponse.data;
+        this.$store.commit("productCategories", categoryResponse.data);
       } catch (e) {
         catchError(e);
       }
@@ -354,17 +237,15 @@ export default {
         for (let key in this.formData) {
           if (this.formData[key] === "") this.formData[key] = null;
         }
-        console.log("this.formData", this.formData);
-
         const resp = await axios
           .post(PRODUCT_URL, this.formData)
           .then(res => res.data);
-        console.log("resp", resp);
 
-        // if (resp.meta.status === 201) {
-        //   showNoty("Data disimpan", "success");
-        //   this.$emit("onAdd", resp.data);
-        // }
+        if (resp.meta.status === 201) {
+          showNoty("Data Saved", "success");
+          this.$emit("onAdd", resp.data);
+          this.formData = {};
+        }
         this.deactivateLoader();
       } catch (e) {
         this.deactivateLoader();

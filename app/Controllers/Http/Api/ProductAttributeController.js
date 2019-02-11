@@ -1,25 +1,11 @@
 "use strict";
 
-const Product = use("App/Models/Product");
+const ProductAttribute = use("App/Models/ProductAttribute");
 
 const { ResponseParser, ErrorLog, RedisHelper } = use("App/Helpers");
-const fillable = [
-  "name",
-  "product_category_id",
-  "code",
-  "regular_price",
-  "sell_price",
-  "discount",
-  "tax",
-  "stock",
-  "ordering",
-  "tags",
-  "is_featured",
-  "is_publish",
-  "material"
-];
+const fillable = ["product_id", "name", "values"];
 
-class ProductController {
+class ProductAttributeController {
   /**
    * Index
    * Get List of Universities
@@ -44,7 +30,7 @@ class ProductController {
       if (!sort_by) sort_by = "id";
       if (!sort_mode) sort_mode = "desc";
 
-      const redisKey = `Product_${page || ""}${limit || ""}${sort_by ||
+      const redisKey = `ProductAttribute_${page || ""}${limit || ""}${sort_by ||
         ""}${sort_mode || ""}${search_by || ""}${search_query ||
         ""}${between_date || ""}${start_date || ""}${end_date || ""}`;
 
@@ -53,15 +39,12 @@ class ProductController {
       if (cached && !search) {
         return cached;
       }
-      const data = await Product.query()
+      const data = await ProductAttribute.query()
         .with("stockStatus")
         .where(function() {
           if (search && search != "") {
-            this.where("name", "like", `%${search}%`);
-            this.orWhere("code", "like", `%${search}%`);
-            this.orWhere("stock", "like", `%${search}%`);
-            this.orWhere("regular_price", "like", `%${search}%`);
-            this.orWhere("sell_price", "like", `%${search}%`);
+            this.where("short_description", "like", `%${search}%`);
+            this.orWhere("long_description", "like", `%${search}%`);
           }
 
           if (search_by && search_query) {
@@ -88,30 +71,27 @@ class ProductController {
 
   /**
    * Store
-   * Store New Products
+   * Store New ProductAttributes
    * Can only be done by Super Administrator
    */
 
   async store({ request, response }) {
     try {
-      let body = request.only(fillable);
-      const data = await Product.create(body);
-      const { short_description, long_description } = request.post();
-      if (short_description || long_description) {
-        await data
-          .description()
-          .create({ short_description, long_description });
+      const { product_id, attributes } = request.post();
+      if (attributes && attributes.length) {
+        for (let i = 0; i < attributes.length; i++) {
+          await createAttribute({
+            product_id,
+            name: attributes[i].name,
+            value: attributes[i].value
+          });
+        }
+      } else {
+        const body = request.only(fillable);
+        await createAttribute(body);
       }
-      const { attributes } = request.post();
-      if (attributes) {
-        await data.attributes().createMany(attributes);
-      }
-      const { shipping } = request.post();
-      if (shipping) {
-        await data.shipping().create(shipping);
-      }
-      await RedisHelper.delete("Product_*");
-      await data.load("stockStatus");
+
+      await RedisHelper.delete("ProductAttribute_*");
       let parsed = ResponseParser.apiCreated(data.toJSON());
       return response.status(201).send(parsed);
     } catch (e) {
@@ -120,19 +100,23 @@ class ProductController {
     }
   }
 
+  async createAttribute(data) {
+    return await ProductAttribute.create(data);
+  }
+
   /**
    * Show
-   * Product by id
+   * ProductAttribute by id
    */
   async show({ request, response }) {
     try {
       const id = request.params.id;
-      let redisKey = `Product_${id}`;
+      let redisKey = `ProductAttribute_${id}`;
       let cached = await RedisHelper.get(redisKey);
       if (cached) {
         return response.status(200).send(cached);
       }
-      const data = await Product.find(id);
+      const data = await ProductAttribute.find(id);
       if (!data) {
         return response.status(400).send(ResponseParser.apiNotFound());
       }
@@ -147,20 +131,20 @@ class ProductController {
 
   /**
    * Update
-   * Update Product by Id
+   * Update ProductAttribute by Id
    * Can only be done by Super Administrator
    */
-  async update({ request, response }) {
+  async update({ request, response, auth }) {
     try {
       let body = request.only(fillable);
       const id = request.params.id;
-      const data = await Product.find(id);
-      if (!data) {
+      const data = await ProductAttribute.find(id);
+      if (!data || data.length === 0) {
         return response.status(400).send(ResponseParser.apiNotFound());
       }
       await data.merge(body);
       await data.save();
-      await RedisHelper.delete("Product_*");
+      await RedisHelper.delete("ProductAttribute_*");
       let parsed = ResponseParser.apiUpdated(data.toJSON());
       return response.status(200).send(parsed);
     } catch (e) {
@@ -171,18 +155,15 @@ class ProductController {
 
   /**
    * Delete
-   * Delete Product by Id
+   * Delete ProductAttribute by Id
    * Can only be done by Super Administrator
-   * Default Product ['Super Administrator', 'Administrator', 'Supervisor', 'Marketing', 'Student'] cannot be deleted
+   * Default ProductAttribute ['Super Administrator', 'Administrator', 'Supervisor', 'Marketing', 'Student'] cannot be deleted
    */
-  async destroy({ request, response }) {
+  async destroy({ request, response, auth }) {
     try {
       const id = request.params.id;
-      const data = await Product.find(id);
-      if (!data) {
-        return response.status(400).send(ResponseParser.apiNotFound());
-      }
-      await RedisHelper.delete("Product_*");
+      const data = await ProductAttribute.find(id);
+      await RedisHelper.delete("ProductAttribute_*");
       await data.delete();
       return response.status(200).send(ResponseParser.apiDeleted());
     } catch (e) {
@@ -192,4 +173,4 @@ class ProductController {
   }
 }
 
-module.exports = ProductController;
+module.exports = ProductAttributeController;

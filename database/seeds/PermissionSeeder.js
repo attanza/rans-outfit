@@ -1,7 +1,6 @@
 "use strict";
 
 const Permission = use("App/Models/Permission");
-const Database = use("Database");
 
 const resources = [
   "User",
@@ -22,7 +21,6 @@ const actions = ["Read", "Create", "Update", "Delete"];
 class PermissionSeeder {
   async run() {
     await Permission.truncate();
-    await Database.table("permission_role").truncate();
     for (let i = 0; i < resources.length; i++) {
       for (let j = 0; j < actions.length; j++) {
         await Permission.create({ name: actions[j] + " " + resources[i] });

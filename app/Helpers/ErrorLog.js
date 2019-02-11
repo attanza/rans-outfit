@@ -1,8 +1,11 @@
 const Env = use("Env");
 const ErrorLog = use("App/Models/ErrorLog");
 const MailHelper = require("./MailHelper");
+
 module.exports = async (request, e) => {
   const NODE_ENV = Env.get("NODE_ENV");
+  console.log("NODE_ENV", NODE_ENV);
+
   if (NODE_ENV === "development") {
     console.log(e);
   } else {

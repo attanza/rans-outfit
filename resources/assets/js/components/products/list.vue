@@ -12,7 +12,13 @@
           @onClick="showForm = true"
         />
         <v-spacer/>
-        <v-text-field v-model="search" append-icon="search" label="Cari" single-line hide-details/>
+        <v-text-field
+          v-model="pagination.search"
+          append-icon="search"
+          label="Search"
+          single-line
+          hide-details
+        />
       </v-toolbar>
       <v-data-table
         :headers="headers"
@@ -40,7 +46,7 @@
         </template>
       </v-data-table>
     </v-card>
-    <dform :show="showForm" @onClose="showForm = false" @onAdd="addData"/>
+    <dform :show="showForm" @onClose="onClose" @onAdd="addData"/>
   </div>
 </template>
 <script>
@@ -50,7 +56,7 @@ import { global } from "../../mixins";
 import dform from "./dform";
 import axios from "axios";
 import catchError from "../../utils/catchError";
-
+import debounce from "lodash/debounce";
 export default {
   components: { dform },
   mixins: [global],
@@ -66,14 +72,14 @@ export default {
       { text: "Featured", value: "is_featured", align: "left" }
     ],
     items: [],
-    showForm: true
+    showForm: false
   }),
 
   watch: {
     pagination: {
-      handler() {
+      handler: debounce(function() {
         this.pupulateTable();
-      },
+      }, 500),
       deep: true
     }
   },
@@ -90,10 +96,8 @@ export default {
       try {
         this.activateLoader();
         this.loading = true;
-        const { page, rowsPerPage, descending, sortBy } = this.pagination;
-        const endPoint = `${PRODUCT_URL}?page=${page}&limit=${rowsPerPage}&search=${
-          this.search
-        }`;
+        const { descending, sortBy } = this.pagination;
+        const endPoint = `${PRODUCT_URL}?${this.getQueryParams()}`;
         const res = await axios.get(endPoint).then(res => res.data);
         this.items = res.data;
         this.totalItems = res.meta.total;
@@ -122,11 +126,14 @@ export default {
       }
     },
     toDetail(data) {
-      this.$router.push(`/universities/${data.id}`);
+      window.location.replace("/admin/products/" + data.id);
+    },
+    onClose() {
+      this.showForm = false;
     },
     addData(data) {
       this.items.unshift(data);
-      this.showForm = false;
+      this.onClose();
     },
     downloadData() {
       this.dataToExport = [];
