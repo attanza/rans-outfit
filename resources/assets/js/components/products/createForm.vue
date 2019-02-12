@@ -39,7 +39,7 @@ export default {
   components: { productForm, description, attributes, uploadMedia },
   data() {
     return {
-      e1: 4
+      e1: 0
     };
   },
   methods: {

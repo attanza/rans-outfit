@@ -135,6 +135,8 @@ class ProductDescriptionController {
       await data.merge(body);
       await data.save();
       await RedisHelper.delete("ProductDescription_*");
+      await RedisHelper.delete(`Product_${data.product_id}`);
+
       let parsed = ResponseParser.apiUpdated(data.toJSON());
       return response.status(200).send(parsed);
     } catch (e) {

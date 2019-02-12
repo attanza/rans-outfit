@@ -67,7 +67,7 @@
     <v-card-actions>
       <v-btn @click="cancel">Cancel</v-btn>
       <v-spacer></v-spacer>
-      <v-btn @click="submit" color="primary">
+      <v-btn @click="cancel" color="primary">
         <v-icon>navigate_next</v-icon>
       </v-btn>
     </v-card-actions>

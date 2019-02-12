@@ -8,8 +8,6 @@ class ProductMedia extends Model {
   getUrl() {
     if (this.url) {
       const splitUrl = this.url.split(":");
-      console.log("splitUrl", splitUrl);
-
       if (splitUrl && (splitUrl[0] === "http" || splitUrl[0] === "https")) {
         return this.url;
       }

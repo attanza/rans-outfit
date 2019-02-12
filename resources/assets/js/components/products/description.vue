@@ -13,7 +13,11 @@
           </v-flex>
         </v-layout>
       </v-card-text>
-      <v-card-actions>
+      <v-card-actions v-if="isEdit">
+        <v-spacer></v-spacer>
+        <v-btn @click="submitUpdate" color="primary">Save</v-btn>
+      </v-card-actions>
+      <v-card-actions v-if="!isEdit">
         <v-btn @click="cancel">Cancel</v-btn>
         <v-spacer></v-spacer>
         <v-btn @click="submit" color="primary">
@@ -25,7 +29,7 @@
 </template>
 <script>
 import { PRODUCT_DESCRIPTION_URL } from "../../utils/apis";
-import catchError from "../../utils/catchError";
+import catchError, { showNoty } from "../../utils/catchError";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { global, product } from "../../mixins";
 
@@ -33,14 +37,32 @@ export default {
   mixins: [global, product],
   data() {
     return {
+      id: "",
       short_description: "",
       long_description: ""
     };
   },
+  props: {
+    isEdit: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
+  },
+  watch: {
+    description() {
+      if (this.description) {
+        const { id, short_description, long_description } = this.description;
+        this.id = id;
+        this.short_description = short_description;
+        this.long_description = long_description;
+      }
+    }
+  },
   computed: {
-    product_id() {
-      if (this.currentEdit) {
-        return this.currentEdit.id;
+    description() {
+      if (this.currentEdit && this.currentEdit.description) {
+        return this.currentEdit.description;
       }
       return null;
     }
@@ -57,11 +79,42 @@ export default {
             short_description: this.short_description,
             long_description: this.long_description
           };
+
           const resp = await axios
             .post(PRODUCT_DESCRIPTION_URL, postData)
             .then(res => res.data);
           if (resp.meta.status === 201) {
             this.$emit("onSaveDescription");
+          }
+        }
+      } catch (e) {
+        catchError(e);
+      }
+    },
+    async submitUpdate() {
+      try {
+        const postData = {
+          product_id: this.currentEdit ? this.currentEdit.id : null,
+          short_description: this.short_description,
+          long_description: this.long_description
+        };
+        if (this.id) {
+          const resp = await axios
+            .put(`${PRODUCT_DESCRIPTION_URL}/${this.id}`, postData)
+            .then(res => res.data);
+          if (resp.meta.status === 200) {
+            showNoty("Data updated", "success");
+          }
+        } else {
+          const resp = await axios
+            .post(PRODUCT_DESCRIPTION_URL, postData)
+            .then(res => res.data);
+          if (resp.meta.status === 201) {
+            // replicate current store and modify
+            const storeData = Object.assign({}, this.currentEdit);
+            storeData.description = resp.data;
+            this.$store.commit("currentEdit", storeData);
+            showNoty("Data saved", "success");
           }
         }
       } catch (e) {

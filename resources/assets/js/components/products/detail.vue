@@ -9,7 +9,7 @@
         <detail-form/>
       </v-tab-item>
       <v-tab-item :value="'description'">
-        <description/>
+        <description :is-edit="isEdit"/>
       </v-tab-item>
     </v-tabs>
   </div>
@@ -28,6 +28,11 @@ export default {
       type: String,
       required: true
     }
+  },
+  data() {
+    return {
+      isEdit: true
+    };
   },
   mixins: [global],
   mounted() {
