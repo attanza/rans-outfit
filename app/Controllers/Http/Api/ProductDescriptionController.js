@@ -87,6 +87,8 @@ class ProductDescriptionController {
       const data = await ProductDescription.create(body);
       let parsed = ResponseParser.apiCreated(data.toJSON());
       await RedisHelper.delete("ProductDescription_*");
+      await RedisHelper.delete(`Product_${body.product_id}`);
+
       return response.status(201).send(parsed);
     } catch (e) {
       ErrorLog(request, e);
@@ -159,6 +161,8 @@ class ProductDescriptionController {
         return response.status(400).send(ResponseParser.apiNotFound());
       }
       await RedisHelper.delete("ProductDescription_*");
+      await RedisHelper.delete(`Product_${data.product_id}`);
+
       await data.delete();
       return response.status(200).send(ResponseParser.apiDeleted());
     } catch (e) {
