@@ -3,6 +3,8 @@
 const Helpers = use("Helpers");
 const { ResponseParser, ErrorLog, RedisHelper } = use("App/Helpers");
 const ProductMedia = use("App/Models/ProductMedia");
+const Drive = use("Drive");
+
 const fillable = [
   "product_id",
   "caption",
@@ -105,6 +107,31 @@ class ProductMediaController {
       await RedisHelper.delete("ProductMedia_*");
       let parsed = ResponseParser.apiCreated(media.toJSON());
       return response.status(200).send(parsed);
+    } catch (e) {
+      ErrorLog(request, e);
+      return response.status(500).send(ResponseParser.unknownError());
+    }
+  }
+
+  /**
+   * Delete
+   */
+  async destroy({ request, response }) {
+    try {
+      const id = request.params.id;
+      let data = await ProductMedia.find(id);
+      if (!data) {
+        return response.status(400).send(ResponseParser.apiNotFound());
+      }
+
+      let exists = await Drive.exists(Helpers.publicPath(data.url));
+      if (exists) {
+        await Drive.delete(Helpers.publicPath(data.url));
+      }
+      await RedisHelper.delete("ProductMedia_*");
+      await RedisHelper.delete(`Product_${data.product_id}`);
+      await data.delete();
+      return response.status(200).send(ResponseParser.apiDeleted());
     } catch (e) {
       ErrorLog(request, e);
       return response.status(500).send(ResponseParser.unknownError());

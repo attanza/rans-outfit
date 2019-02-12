@@ -5,11 +5,19 @@
       <v-tabs-slider color="white"/>
       <v-tab href="#detail">Detail</v-tab>
       <v-tab href="#description">Descriptions</v-tab>
+      <v-tab href="#attributes">Attributes</v-tab>
+      <v-tab href="#medias">Media</v-tab>
       <v-tab-item :value="'detail'">
         <detail-form/>
       </v-tab-item>
       <v-tab-item :value="'description'">
         <description :is-edit="isEdit"/>
+      </v-tab-item>
+      <v-tab-item :value="'attributes'">
+        <attributes :is-edit="isEdit"/>
+      </v-tab-item>
+      <v-tab-item :value="'medias'">
+        <uploadMedia :is-edit="isEdit"/>
       </v-tab-item>
     </v-tabs>
   </div>
@@ -20,9 +28,11 @@ import catchError from "../../utils/catchError";
 import { global } from "../../mixins";
 import detailForm from "./detailForm";
 import description from "./description";
+import attributes from "./attributes";
+import uploadMedia from "./uploadMedia";
 
 export default {
-  components: { detailForm, description },
+  components: { detailForm, description, attributes, uploadMedia },
   props: {
     id: {
       type: String,

@@ -3,7 +3,7 @@
 const ProductAttribute = use("App/Models/ProductAttribute");
 
 const { ResponseParser, ErrorLog, RedisHelper } = use("App/Helpers");
-const fillable = ["product_id", "name", "values"];
+const fillable = ["product_id", "name", "value"];
 
 class ProductAttributeController {
   /**
@@ -22,7 +22,8 @@ class ProductAttributeController {
         start_date,
         end_date,
         sort_by,
-        sort_mode
+        sort_mode,
+        product_id
       } = request.get();
 
       if (!page) page = 1;
@@ -32,7 +33,8 @@ class ProductAttributeController {
 
       const redisKey = `ProductAttribute_${page || ""}${limit || ""}${sort_by ||
         ""}${sort_mode || ""}${search_by || ""}${search_query ||
-        ""}${between_date || ""}${start_date || ""}${end_date || ""}`;
+        ""}${between_date || ""}${start_date || ""}${end_date ||
+        ""}${product_id || ""}`;
 
       let cached = await RedisHelper.get(redisKey);
 
@@ -45,6 +47,10 @@ class ProductAttributeController {
           if (search && search != "") {
             this.where("short_description", "like", `%${search}%`);
             this.orWhere("long_description", "like", `%${search}%`);
+          }
+
+          if (product_id && product_id != "") {
+            this.where("product_id", product_id);
           }
 
           if (search_by && search_query) {
@@ -78,9 +84,10 @@ class ProductAttributeController {
   async store({ request, response }) {
     try {
       const { product_id, attributes } = request.post();
+      let attribute;
       if (attributes && attributes.length) {
         for (let i = 0; i < attributes.length; i++) {
-          await this.createAttribute({
+          attribute = await this.createAttribute({
             product_id,
             name: attributes[i].name,
             value: attributes[i].value
@@ -88,11 +95,12 @@ class ProductAttributeController {
         }
       } else {
         const body = request.only(fillable);
-        await this.createAttribute(body);
+        attribute = await this.createAttribute(body);
       }
 
       await RedisHelper.delete("ProductAttribute_*");
-      let parsed = ResponseParser.apiCreated();
+      await RedisHelper.delete(`Product_${product_id}`);
+      let parsed = ResponseParser.apiCreated(attribute);
       return response.status(201).send(parsed);
     } catch (e) {
       ErrorLog(request, e);
@@ -167,6 +175,7 @@ class ProductAttributeController {
         return response.status(400).send(ResponseParser.apiNotFound());
       }
       await RedisHelper.delete("ProductAttribute_*");
+      await RedisHelper.delete(`Product_${data.product_id}`);
       await data.delete();
       return response.status(200).send(ResponseParser.apiDeleted());
     } catch (e) {
