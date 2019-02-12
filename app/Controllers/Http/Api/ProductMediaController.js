@@ -105,6 +105,8 @@ class ProductMediaController {
       }
 
       await RedisHelper.delete("ProductMedia_*");
+      await RedisHelper.delete(`Product_${body.product_id}`);
+
       let parsed = ResponseParser.apiCreated(media.toJSON());
       return response.status(200).send(parsed);
     } catch (e) {
@@ -125,6 +127,7 @@ class ProductMediaController {
       data.merge(body);
       await data.save();
       await RedisHelper.delete("ProductMedia_*");
+      await RedisHelper.delete(`Product_${body.product_id}`);
       let parsed = ResponseParser.apiUpdated(data.toJSON());
       return response.status(200).send(parsed);
     } catch (e) {
