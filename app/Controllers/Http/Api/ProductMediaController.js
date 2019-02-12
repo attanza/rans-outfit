@@ -113,6 +113,26 @@ class ProductMediaController {
     }
   }
 
+  async update({ request, response }) {
+    try {
+      const id = request.params.id;
+      const body = request.only(fillable);
+
+      let data = await ProductMedia.find(id);
+      if (!data) {
+        return response.status(400).send(ResponseParser.apiNotFound());
+      }
+      data.merge(body);
+      await data.save();
+      await RedisHelper.delete("ProductMedia_*");
+      let parsed = ResponseParser.apiUpdated(data.toJSON());
+      return response.status(200).send(parsed);
+    } catch (e) {
+      ErrorLog(request, e);
+      return response.status(500).send(ResponseParser.unknownError());
+    }
+  }
+
   /**
    * Delete
    */

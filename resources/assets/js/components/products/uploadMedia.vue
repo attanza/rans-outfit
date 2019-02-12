@@ -70,6 +70,7 @@
                     tooltip-text="edit detail"
                     color="primary"
                     class="mr-2"
+                    @onClick="editMedia(media, index)"
                   />
                   <Tbtn
                     icon="delete"
@@ -98,6 +99,7 @@
       @onClose="showDialog = false"
       @onConfirmed="removeData"
     />
+    <mediaForm :show="show" @onClose="clearData" :media="currentMedia" @onUpdate="updatMedia"/>
   </div>
 </template>
 
@@ -107,8 +109,10 @@ import axios from "axios";
 import { PRODUCT_MEDIA_URL } from "../../utils/apis";
 import catchError from "../../utils/catchError";
 import Dialog from "../Dialog";
+import mediaForm from "./mediaForm";
+
 export default {
-  components: { Dialog },
+  components: { Dialog, mediaForm },
   mixins: [global],
   props: {
     isEdit: {
@@ -133,7 +137,8 @@ export default {
       description: "",
       mediaTypes: ["image", "video"],
       medias: [],
-      is_upload: false
+      is_upload: false,
+      show: false
     };
   },
   props: {
@@ -212,7 +217,6 @@ export default {
           .then(res => res.data);
         if (resp.meta.status === 201) {
           this.medias.push(resp.data);
-          console.log("medias", this.medias);
         }
 
         this.clearData();
@@ -229,11 +233,12 @@ export default {
       this.mediaType = "image";
       this.caption = "";
       this.url = "";
-      this.is_main = "";
-      this.is_publish = "";
+      this.is_main = false;
+      this.is_publish = false;
       this.index = "";
       this.currentMedia = null;
       this.showDialog = false;
+      this.show = false;
     },
     cancel() {
       window.location.replace("/admin/products");
@@ -246,9 +251,6 @@ export default {
     async removeData() {
       try {
         if (this.isEdit) {
-          console.log("this.index", this.index);
-          console.log("this.currentMedia", this.currentMedia);
-
           this.activateLoader();
           const resp = await axios
             .delete(`${PRODUCT_MEDIA_URL}/${this.currentMedia.id}`)
@@ -262,11 +264,18 @@ export default {
           this.medias.splice(this.index, 1);
         }
       } catch (e) {
-        console.log("e", e);
-
         this.deactivateLoader();
         catchError(e);
       }
+    },
+    editMedia(media, index) {
+      this.index = index;
+      this.currentMedia = media;
+      this.show = true;
+    },
+    updatMedia(data) {
+      this.medias.splice(this.index, 1, data);
+      this.clearData();
     }
   }
 };
