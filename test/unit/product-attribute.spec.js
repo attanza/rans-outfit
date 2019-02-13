@@ -7,6 +7,7 @@ const ProductAttribute = use("App/Models/ProductAttribute");
 const Chance = require("chance");
 const chance = new Chance();
 const endpoint = "/api/v1/product-attributes";
+const { RedisHelper } = use("App/Helpers");
 
 trait("Test/ApiClient");
 trait("Auth/Client");
@@ -43,12 +44,16 @@ test("Attribute Store", async ({ client, assert }) => {
     .send(postData)
     .end();
   response.assertStatus(201);
-  let attributes = await ProductAttribute.query()
-    .where("product_id", postData.product_id)
-    .fetch();
-  attributes = attributes.toJSON();
-  assert.isArray(attributes);
-  assert.equal(attributes[0].name, postData.name);
+  const respResult = JSON.parse(response.text);
+  assert.isObject(respResult);
+  assert.isObject(respResult.data);
+  assert.isNumber(respResult.data.id);
+  let attribute = await ProductAttribute.find(respResult.data.id);
+  attribute = attribute.toJSON();
+  assert.isObject(attribute);
+  assert.equal(attribute.name, postData.name);
+  const cache = await RedisHelper.get(`Product_${postData.product_id}`);
+  assert.isNull(cache);
 });
 
 test("Attribute Bulk Store", async ({ client, assert }) => {
@@ -66,13 +71,17 @@ test("Attribute Bulk Store", async ({ client, assert }) => {
     .end();
 
   response.assertStatus(201);
+  const respResult = JSON.parse(response.text);
+  assert.isObject(respResult);
+  assert.isObject(respResult.data);
+  assert.isNumber(respResult.data.id);
 
-  let attributes = await ProductAttribute.query()
-    .where("product_id", postData.product_id)
-    .fetch();
-  attributes = attributes.toJSON();
-  assert.isArray(attributes);
-  assert.equal(attributes[0].name, bulkData.attributes[0].name);
+  let attribute = await ProductAttribute.find(respResult.data.id);
+  attribute = attribute.toJSON();
+  assert.isObject(attribute);
+  assert.equal(attribute.name, bulkData.attributes[1].name);
+  const cache = await RedisHelper.get(`Product_${postData.product_id}`);
+  assert.isNull(cache);
 });
 
 test("Attribute Store with uncomplete Data will failed", async ({ client }) => {
@@ -137,6 +146,8 @@ test("Attribute Update", async ({ client, assert }) => {
   let newData = await ProductAttribute.find(data.id);
   newData = newData.toJSON();
   assert.equal(newData.name, postData2.name);
+  const cache = await RedisHelper.get(`Product_${postData.product_id}`);
+  assert.isNull(cache);
 });
 
 test("Attribute Update with uncomplete data will failed", async ({
@@ -159,13 +170,15 @@ test("Attribute Update with wrong id will failed", async ({ client }) => {
   response.assertStatus(400);
 });
 
-test("Attribute Delete", async ({ client }) => {
+test("Attribute Delete", async ({ client, assert }) => {
   const product = await ProductAttribute.create(postData);
   const response = await client
     .delete(`${endpoint}/${product.id}`)
     .loginVia(user)
     .end();
   response.assertStatus(200);
+  const cache = await RedisHelper.get(`Product_${postData.product_id}`);
+  assert.isNull(cache);
 });
 
 test("Attribute Delete with unknown id will failed", async ({ client }) => {

@@ -7,7 +7,7 @@ const ProductDescription = use("App/Models/ProductDescription");
 const Chance = require("chance");
 const chance = new Chance();
 const endpoint = "/api/v1/product-descriptions";
-
+const { RedisHelper } = use("App/Helpers");
 trait("Test/ApiClient");
 trait("Auth/Client");
 trait("Session/Client");
@@ -27,7 +27,7 @@ before(async () => {
   };
 });
 
-test("List", async ({ client }) => {
+test("Description List", async ({ client }) => {
   const response = await client
     .get(endpoint)
     .loginVia(user)
@@ -36,16 +36,20 @@ test("List", async ({ client }) => {
   response.assertStatus(200);
 });
 
-test("Store", async ({ client }) => {
+test("Description Store", async ({ client, assert }) => {
   const response = await client
     .post(endpoint)
     .loginVia(user)
     .send(postData)
     .end();
   response.assertStatus(201);
+  const cache = await RedisHelper.get(`Product_${postData.product_id}`);
+  assert.isNull(cache);
 });
 
-test("Store with uncomplete Data will failed", async ({ client }) => {
+test("Description Store with uncomplete Data will failed", async ({
+  client
+}) => {
   const response = await client
     .post(endpoint)
     .loginVia(user)
@@ -53,7 +57,7 @@ test("Store with uncomplete Data will failed", async ({ client }) => {
   response.assertStatus(422);
 });
 
-test("Show with wrong id will failed", async ({ client }) => {
+test("Description Show with wrong id will failed", async ({ client }) => {
   const response = await client
     .get(endpoint + "/hjkasdh879879")
     .loginVia(user)
@@ -61,7 +65,7 @@ test("Show with wrong id will failed", async ({ client }) => {
   response.assertStatus(400);
 });
 
-test("Show", async ({ client }) => {
+test("Description Show", async ({ client }) => {
   const data = await ProductDescription.create(postData);
   const response = await client
     .get(`${endpoint}/${data.id}`)
@@ -81,7 +85,7 @@ test("Show", async ({ client }) => {
   });
 });
 
-test("Update", async ({ client }) => {
+test("Description Update", async ({ client, assert }) => {
   const postData2 = {
     product_id: product.id,
     short_description: chance.paragraph(),
@@ -105,9 +109,13 @@ test("Update", async ({ client }) => {
       long_description: postData2.long_description
     }
   });
+  const cache = await RedisHelper.get(`Product_${postData.product_id}`);
+  assert.isNull(cache);
 });
 
-test("Update with uncomplete data will failed", async ({ client }) => {
+test("Description Update with uncomplete data will failed", async ({
+  client
+}) => {
   const data = await ProductDescription.create(postData);
   const response = await client
     .put(`${endpoint}/${data.id}`)
@@ -116,7 +124,7 @@ test("Update with uncomplete data will failed", async ({ client }) => {
   response.assertStatus(422);
 });
 
-test("Update with wrong id will failed", async ({ client }) => {
+test("Description Update with wrong id will failed", async ({ client }) => {
   const response = await client
     .put(endpoint + "/hdajsdh728939")
     .loginVia(user)
@@ -125,16 +133,18 @@ test("Update with wrong id will failed", async ({ client }) => {
   response.assertStatus(400);
 });
 
-test("Delete", async ({ client }) => {
+test("Description Delete", async ({ client, assert }) => {
   const product = await ProductDescription.create(postData);
   const response = await client
     .delete(`${endpoint}/${product.id}`)
     .loginVia(user)
     .end();
   response.assertStatus(200);
+  const cache = await RedisHelper.get(`Product_${postData.product_id}`);
+  assert.isNull(cache);
 });
 
-test("Delete with unknown id will failed", async ({ client }) => {
+test("Description Delete with unknown id will failed", async ({ client }) => {
   const response = await client
     .delete(endpoint + "/djhaksdh2379")
     .loginVia(user)

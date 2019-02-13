@@ -42,11 +42,11 @@ class ProductAttributeController {
         return cached;
       }
       const data = await ProductAttribute.query()
-        .with("stockStatus")
+        .with("product")
         .where(function() {
           if (search && search != "") {
-            this.where("short_description", "like", `%${search}%`);
-            this.orWhere("long_description", "like", `%${search}%`);
+            this.where("name", "like", `%${search}%`);
+            this.orWhere("value", "like", `%${search}%`);
           }
 
           if (product_id && product_id != "") {
@@ -153,6 +153,8 @@ class ProductAttributeController {
       await data.merge(body);
       await data.save();
       await RedisHelper.delete("ProductAttribute_*");
+      await RedisHelper.delete(`Product_${data.product_id}`);
+
       let parsed = ResponseParser.apiUpdated(data.toJSON());
       return response.status(200).send(parsed);
     } catch (e) {

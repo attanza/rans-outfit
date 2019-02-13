@@ -42,7 +42,7 @@ class ProductDescriptionController {
         return cached;
       }
       const data = await ProductDescription.query()
-        .with("stockStatus")
+        .with("product")
         .where(function() {
           if (search && search != "") {
             this.where("short_description", "like", `%${search}%`);
