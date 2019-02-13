@@ -5273,6 +5273,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
@@ -5298,18 +5303,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       currentMedia: null,
       showDialog: false,
       imageName: "",
-      imageUrl: "",
+      imageUrl: null,
       imageFile: "",
       mediaType: "image",
       caption: "",
-      url: "",
+      url: null,
       is_main: false,
       is_publish: false,
       description: "",
       mediaTypes: ["image", "video"],
       medias: [],
       is_upload: false,
-      show: false
+      show: false,
+      uploadDisabled: true
     };
   }
 }, _defineProperty(_components$mixins$pr, "props", {
@@ -5322,6 +5328,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   mediaStore: function mediaStore() {
     if (this.mediaStore) {
       this.medias = this.mediaStore;
+    }
+  },
+  url: function url() {
+    if (this.url && this.url != "") {
+      this.uploadDisabled = false;
     }
   }
 }), _defineProperty(_components$mixins$pr, "computed", {
@@ -5340,9 +5351,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     return null;
   }
 }), _defineProperty(_components$mixins$pr, "methods", {
+  uploadCheckChange: function uploadCheckChange() {
+    this.url = "";
+  },
   checkType: function checkType() {
     if (this.mediaType === "image") {
       this.is_upload = false;
+      this.uploadDisabled = true;
     }
   },
   pickFile: function pickFile() {
@@ -5365,6 +5380,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       fr.addEventListener("load", function () {
         _this.imageUrl = fr.result;
         _this.imageFile = files[0]; // this is an image file that can be sent to server...
+
+        _this.uploadDisabled = false;
       });
     } else {
       this.clearData();
@@ -5380,6 +5397,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           switch (_context.prev = _context.next) {
             case 0:
               _context.prev = 0;
+
+              if (!(!this.url && !this.imageUrl)) {
+                _context.next = 4;
+                break;
+              }
+
+              Object(_utils_catchError__WEBPACK_IMPORTED_MODULE_4__["showNoty"])("File or Url is required", "error");
+              return _context.abrupt("return");
+
+            case 4:
               this.activateLoader();
               formData = new FormData();
               formData.append("file", this.imageFile);
@@ -5389,7 +5416,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               formData.append("url", this.url);
               formData.append("is_main", this.is_main);
               formData.append("is_publish", this.is_publish);
-              _context.next = 12;
+              _context.next = 15;
               return axios__WEBPACK_IMPORTED_MODULE_2___default.a.post(_utils_apis__WEBPACK_IMPORTED_MODULE_3__["PRODUCT_MEDIA_URL"], formData, {
                 headers: {
                   "Content-Type": "multipart/form-data"
@@ -5398,7 +5425,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 return res.data;
               });
 
-            case 12:
+            case 15:
               resp = _context.sent;
 
               if (resp.meta.status === 201) {
@@ -5407,21 +5434,21 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
               this.clearData();
               this.deactivateLoader();
-              _context.next = 22;
+              _context.next = 25;
               break;
 
-            case 18:
-              _context.prev = 18;
+            case 21:
+              _context.prev = 21;
               _context.t0 = _context["catch"](0);
               this.deactivateLoader();
               Object(_utils_catchError__WEBPACK_IMPORTED_MODULE_4__["default"])(_context.t0);
 
-            case 22:
+            case 25:
             case "end":
               return _context.stop();
           }
         }
-      }, _callee, this, [[0, 18]]);
+      }, _callee, this, [[0, 21]]);
     }));
 
     function submit() {
@@ -39751,6 +39778,7 @@ var render = function() {
                     [
                       _c("v-checkbox", {
                         attrs: { label: "Upload media", color: "primary" },
+                        on: { change: _vm.uploadCheckChange },
                         model: {
                           value: _vm.is_upload,
                           callback: function($$v) {
@@ -39828,7 +39856,10 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "v-btn",
-                { attrs: { color: "warning" }, on: { click: _vm.submit } },
+                {
+                  attrs: { color: "primary", disabled: _vm.uploadDisabled },
+                  on: { click: _vm.submit }
+                },
                 [_c("v-icon", [_vm._v("cloud_upload")])],
                 1
               )

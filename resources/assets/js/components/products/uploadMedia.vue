@@ -27,7 +27,12 @@
             <v-switch v-model="is_publish" color="primary"></v-switch>
           </v-flex>
           <v-flex xs12>
-            <v-checkbox v-model="is_upload" label="Upload media" color="primary"></v-checkbox>
+            <v-checkbox
+              v-model="is_upload"
+              label="Upload media"
+              color="primary"
+              @change="uploadCheckChange"
+            ></v-checkbox>
           </v-flex>
           <v-flex v-if="!is_upload" xs12>
             <label>Url</label>
@@ -52,7 +57,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="warning" @click="submit">
+        <v-btn color="primary" @click="submit" :disabled="uploadDisabled">
           <v-icon>cloud_upload</v-icon>
         </v-btn>
       </v-card-actions>
@@ -107,7 +112,7 @@
 import { global } from "../../mixins";
 import axios from "axios";
 import { PRODUCT_MEDIA_URL } from "../../utils/apis";
-import catchError from "../../utils/catchError";
+import catchError, { showNoty } from "../../utils/catchError";
 import Dialog from "../Dialog";
 import mediaForm from "./mediaForm";
 
@@ -127,18 +132,19 @@ export default {
       currentMedia: null,
       showDialog: false,
       imageName: "",
-      imageUrl: "",
+      imageUrl: null,
       imageFile: "",
       mediaType: "image",
       caption: "",
-      url: "",
+      url: null,
       is_main: false,
       is_publish: false,
       description: "",
       mediaTypes: ["image", "video"],
       medias: [],
       is_upload: false,
-      show: false
+      show: false,
+      uploadDisabled: true
     };
   },
   props: {
@@ -152,6 +158,11 @@ export default {
     mediaStore() {
       if (this.mediaStore) {
         this.medias = this.mediaStore;
+      }
+    },
+    url() {
+      if (this.url && this.url != "") {
+        this.uploadDisabled = false;
       }
     }
   },
@@ -170,9 +181,13 @@ export default {
     }
   },
   methods: {
+    uploadCheckChange() {
+      this.url = "";
+    },
     checkType() {
       if (this.mediaType === "image") {
         this.is_upload = false;
+        this.uploadDisabled = true;
       }
     },
     pickFile() {
@@ -191,6 +206,7 @@ export default {
         fr.addEventListener("load", () => {
           this.imageUrl = fr.result;
           this.imageFile = files[0]; // this is an image file that can be sent to server...
+          this.uploadDisabled = false;
         });
       } else {
         this.clearData();
@@ -198,6 +214,10 @@ export default {
     },
     async submit() {
       try {
+        if (!this.url && !this.imageUrl) {
+          showNoty("File or Url is required", "error");
+          return;
+        }
         this.activateLoader();
         let formData = new FormData();
         formData.append("file", this.imageFile);

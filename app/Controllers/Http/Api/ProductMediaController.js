@@ -82,6 +82,12 @@ class ProductMediaController {
   async store({ request, response }) {
     try {
       const body = request.only(fillable);
+      const file = request.file("file");
+      if ((!body.url || body.url) == "" && !file) {
+        return response
+          .status(422)
+          .send(ResponseParser.apiValidationFailed("File or Url is required"));
+      }
       const media = await ProductMedia.create(body);
       if (request.file("file")) {
         const photo = request.file("file", {
