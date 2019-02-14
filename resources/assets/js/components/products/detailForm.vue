@@ -120,13 +120,9 @@ export default {
     async updateProduct() {
       try {
         this.activateLoader();
-        console.log("formData", this.formData);
-
         const resp = await axios
           .put(`${PRODUCT_URL}/${this.id}`, this.formData)
           .then(res => res.data);
-        console.log("resp", resp.data);
-
         if (resp.meta.status === 200) {
           const storeData = Object.assign({}, this.currentEdit);
           storeData.description = resp.data;
