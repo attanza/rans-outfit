@@ -5,8 +5,10 @@ const messages = require("./messages");
 
 class UpdateProduct {
   get rules() {
+    const id = this.ctx.params.id;
+
     return {
-      name: "required|max:100|unique:products",
+      name: `required|max:100|unique:products,name,id,${id}`,
       product_category_id: "required|integer",
       code: "string|max:20",
       regular_price: "required|integer",

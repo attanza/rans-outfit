@@ -5,6 +5,7 @@ const User = use("App/Models/User");
 const Product = use("App/Models/Product");
 const Chance = require("chance");
 const chance = new Chance();
+const { RedisHelper } = use("App/Helpers");
 
 trait("Test/ApiClient");
 trait("Auth/Client");
@@ -48,7 +49,7 @@ const postUpdateData = {
   is_publish: 1
 };
 
-test("List", async ({ client }) => {
+test("Product List", async ({ client }) => {
   const endpoint = "/api/v1/products";
   const response = await client
     .get(endpoint)
@@ -58,7 +59,7 @@ test("List", async ({ client }) => {
   response.assertStatus(200);
 });
 
-test("Store Product with uncomplete data will failed", async ({ client }) => {
+test("Product Store with uncomplete data will failed", async ({ client }) => {
   const endpoint = "/api/v1/products";
   const response = await client
     .post(endpoint)
@@ -67,7 +68,7 @@ test("Store Product with uncomplete data will failed", async ({ client }) => {
   response.assertStatus(422);
 });
 
-test("Store Product", async ({ client, assert }) => {
+test("Product Store", async ({ client, assert }) => {
   const endpoint = "/api/v1/products";
   const response = await client
     .post(endpoint)
@@ -75,12 +76,19 @@ test("Store Product", async ({ client, assert }) => {
     .send(postData)
     .end();
   response.assertStatus(201);
-  const product = await Product.findBy("name", postData.name);
+  const respResult = JSON.parse(response.text);
+  assert.isObject(respResult);
+  assert.isObject(respResult.data);
+  assert.isString(respResult.data.id);
+  let product = await Product.find(respResult.data.id);
+  product = product.toJSON();
   assert.isObject(product);
-  assert.equal(product.code, postData.code);
+  assert.equal(product.name, postData.name);
+  const cache = await RedisHelper.get(`Product_${product.id}`);
+  assert.isNull(cache);
 });
 
-test("Show Product with wrong id will failed", async ({ client }) => {
+test("Product Show with wrong id will failed", async ({ client }) => {
   const endpoint = "/api/v1/products/hjkasdh879879";
   const response = await client
     .get(endpoint)
@@ -89,7 +97,7 @@ test("Show Product with wrong id will failed", async ({ client }) => {
   response.assertStatus(400);
 });
 
-test("Show Product", async ({ client }) => {
+test("Product Show", async ({ client, assert }) => {
   const product = await Product.create(postData);
   const endpoint = "/api/v1/products/" + product.id;
   const response = await client
@@ -108,10 +116,14 @@ test("Show Product", async ({ client }) => {
       name: postData.name
     }
   });
+  const cache = await RedisHelper.get(`Product_${product.id}`);
+  assert.isObject(cache);
 });
 
-test("Update Product", async ({ client }) => {
+test("Product Update", async ({ client, assert }) => {
   const product = await Product.create(postData);
+  console.log("product", product.toJSON());
+
   const endpoint = "/api/v1/products/" + product.id;
   const response = await client
     .put(endpoint)
@@ -130,9 +142,22 @@ test("Update Product", async ({ client }) => {
       name: postUpdateData.name
     }
   });
+  const respResult = JSON.parse(response.text);
+
+  assert.isObject(respResult);
+  assert.isObject(respResult.data);
+  assert.isString(respResult.data.id);
+  let updatedProduct = await Product.find(product.id);
+  updatedProduct = updatedProduct.toJSON();
+  assert.isObject(updatedProduct);
+  assert.equal(updatedProduct.name, postUpdateData.name);
+  const cache = await RedisHelper.get(`Product_${updatedProduct.id}`);
+  assert.isNull(cache);
 });
 
-test("Update Product with uncomplete data will failed", async ({ client }) => {
+test("Product Update Product with uncomplete data will failed", async ({
+  client
+}) => {
   const product = await Product.create(postData);
   const endpoint = "/api/v1/products/" + product.id;
   const response = await client
@@ -142,7 +167,7 @@ test("Update Product with uncomplete data will failed", async ({ client }) => {
   response.assertStatus(422);
 });
 
-test("Update Product with wrong id will failed", async ({ client }) => {
+test("Product Update Product with wrong id will failed", async ({ client }) => {
   const endpoint = "/api/v1/products/hdajsdh728939";
   const response = await client
     .put(endpoint)
@@ -151,7 +176,7 @@ test("Update Product with wrong id will failed", async ({ client }) => {
   response.assertStatus(422);
 });
 
-test("Delete Product", async ({ client }) => {
+test("Product Delete Product", async ({ client }) => {
   const product = await Product.create(postData);
   const endpoint = "/api/v1/products/" + product.id;
   const response = await client
@@ -161,7 +186,9 @@ test("Delete Product", async ({ client }) => {
   response.assertStatus(200);
 });
 
-test("Delete Product with unknown id will failed", async ({ client }) => {
+test("Product Delete Product with unknown id will failed", async ({
+  client
+}) => {
   const endpoint = "/api/v1/products/djhaksdh2379";
   const response = await client
     .delete(endpoint)

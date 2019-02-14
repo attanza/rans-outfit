@@ -5194,19 +5194,26 @@ p {
   margin: 0 !important;
   padding: 0 !important;
 }
-.v-dialog--scrollable {
+.v-dialog--scrollable,
+.v-dialog--scrollable > form {
   display: flex;
+  flex: 1 1 0px;
 }
-.v-dialog--scrollable > .v-card {
+.v-dialog--scrollable > .v-card,
+.v-dialog--scrollable > form > .v-card {
   display: flex;
   flex: 1 1 100%;
+  max-width: 100%;
   flex-direction: column;
 }
 .v-dialog--scrollable > .v-card > .v-card__title,
-.v-dialog--scrollable > .v-card > .v-card__actions {
+.v-dialog--scrollable > form > .v-card > .v-card__title,
+.v-dialog--scrollable > .v-card > .v-card__actions,
+.v-dialog--scrollable > form > .v-card > .v-card__actions {
   flex: 1 0 auto;
 }
-.v-dialog--scrollable > .v-card > .v-card__text {
+.v-dialog--scrollable > .v-card > .v-card__text,
+.v-dialog--scrollable > form > .v-card > .v-card__text {
   overflow-y: auto;
   -webkit-backface-visibility: hidden;
           backface-visibility: hidden;

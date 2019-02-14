@@ -221,7 +221,7 @@ export default {
         this.activateLoader();
         let formData = new FormData();
         formData.append("file", this.imageFile);
-        formData.append("product_id", "fIHxY7nbCfZjyiYhuWIsyHWU");
+        formData.append("product_id", this.product_id);
         formData.append("type", this.mediaType);
         formData.append("caption", this.caption);
         formData.append("url", this.url);

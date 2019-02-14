@@ -157,8 +157,12 @@ class ProductController {
       if (!data) {
         return response.status(400).send(ResponseParser.apiNotFound());
       }
-      await data.merge(body);
+      console.log("data", data.toJSON());
+
+      data.merge(body);
       await data.save();
+      console.log("data", data.toJSON());
+
       await RedisHelper.delete("Product_*");
       let parsed = ResponseParser.apiUpdated(data.toJSON());
       return response.status(200).send(parsed);

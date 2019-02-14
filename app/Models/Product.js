@@ -9,9 +9,7 @@ class Product extends Model {
   static boot() {
     super.boot();
 
-    this.addHook("beforeSave", async productInstance => {
-      productInstance.id = await uid.randomUUID(24);
-    });
+    this.addHook("beforeCreate", ["User.generateUid"]);
 
     this.addTrait("@provider:Lucid/Slugify", {
       fields: { slug: "name" },

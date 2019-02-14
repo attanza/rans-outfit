@@ -65,11 +65,21 @@ export default {
         return this.currentEdit.description;
       }
       return null;
+    },
+    product_id() {
+      if (this.currentEdit) {
+        return this.currentEdit.id;
+      }
+      return null;
     }
   },
   methods: {
     async submit() {
       try {
+        console.log("this.product_id", this.product_id);
+        console.log("this.short_description", this.short_description);
+        console.log("this.long_description", this.long_description);
+
         if (
           this.product_id &&
           (this.short_description != "" || this.long_description != "")

@@ -33,7 +33,7 @@ class ExceptionHandler extends BaseExceptionHandler {
 
     if (error.code === "E_ROUTE_NOT_FOUND") {
       if (urlSplit && urlSplit[1] === "api") {
-        return response.status(401).send({
+        return response.status(404).send({
           meta: {
             status: 404,
             message: "Route not found"

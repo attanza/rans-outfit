@@ -10,13 +10,7 @@ const Model = use("Model");
 class User extends Model {
   static boot() {
     super.boot();
-    this.addHook("beforeSave", async userInstance => {
-      if (userInstance.dirty.password) {
-        userInstance.password = await Hash.make(userInstance.password);
-        userInstance.id = await uid.randomUUID(24);
-      }
-    });
-
+    this.addHook("beforeCreate", ["User.generateUid", "hashPassword"]);
     this.addTrait("@provider:Lucid/SoftDeletes");
   }
 
