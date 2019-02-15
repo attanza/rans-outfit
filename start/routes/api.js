@@ -2,6 +2,8 @@ const Route = use("Route");
 
 Route.group(() => {
   Route.post("login", "AuthController.login");
+
+  Route.get("get-featured", "FrontEndController.getFeaturedProducts");
 })
   .prefix("api/v1")
   .namespace("Api");

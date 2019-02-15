@@ -50,11 +50,9 @@
   </div>
 </template>
 <script>
-import _ from "lodash";
 import { PRODUCT_URL } from "../../utils/apis";
 import { global } from "../../mixins";
 import dform from "./dform";
-import axios from "axios";
 import catchError from "../../utils/catchError";
 import debounce from "lodash/debounce";
 export default {
@@ -89,9 +87,6 @@ export default {
   },
 
   methods: {
-    searchQuery: _.debounce(function() {
-      this.pupulateTable();
-    }, 500),
     async pupulateTable() {
       try {
         this.activateLoader();

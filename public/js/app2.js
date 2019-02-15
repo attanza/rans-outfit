@@ -81,7 +81,7 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -10076,28 +10076,6 @@ module.exports = g;
 /******/ ]);
 });
 //# sourceMappingURL=noty.js.map
-
-/***/ }),
-
-/***/ "./node_modules/noty/src/noty.scss":
-/*!*****************************************!*\
-  !*** ./node_modules/noty/src/noty.scss ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
-/***/ "./node_modules/noty/src/themes/metroui.scss":
-/*!***************************************************!*\
-  !*** ./node_modules/noty/src/themes/metroui.scss ***!
-  \***************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
 
 /***/ }),
 
@@ -63772,28 +63750,14 @@ function showNoty(text, type) {
 
 /***/ }),
 
-/***/ "./resources/assets/styl/app.styl":
-/*!****************************************!*\
-  !*** ./resources/assets/styl/app.styl ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-
-/***/ 0:
-/*!*********************************************************************************************************************************************************!*\
-  !*** multi ./resources/assets/js/app.js ./node_modules/noty/src/noty.scss ./node_modules/noty/src/themes/metroui.scss ./resources/assets/styl/app.styl ***!
-  \*********************************************************************************************************************************************************/
+/***/ 1:
+/*!******************************************!*\
+  !*** multi ./resources/assets/js/app.js ***!
+  \******************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /home/danidan/Projects/rans/web/resources/assets/js/app.js */"./resources/assets/js/app.js");
-__webpack_require__(/*! /home/danidan/Projects/rans/web/node_modules/noty/src/noty.scss */"./node_modules/noty/src/noty.scss");
-__webpack_require__(/*! /home/danidan/Projects/rans/web/node_modules/noty/src/themes/metroui.scss */"./node_modules/noty/src/themes/metroui.scss");
-module.exports = __webpack_require__(/*! /home/danidan/Projects/rans/web/resources/assets/styl/app.styl */"./resources/assets/styl/app.styl");
+module.exports = __webpack_require__(/*! /home/danidan/Projects/rans/web/resources/assets/js/app.js */"./resources/assets/js/app.js");
 
 
 /***/ })

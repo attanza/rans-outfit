@@ -3,6 +3,7 @@ let mix = require("laravel-mix");
 mix
   .disableSuccessNotifications()
   .js("resources/assets/js/app.js", "public/js")
+  .js("resources/assets/js/app.js", "public/js/app2.js")
   .sass("node_modules/noty/src/noty.scss", "public/css")
   .sass("node_modules/noty/src/themes/metroui.scss", "public/css")
   .stylus("resources/assets/styl/app.styl", "public/css")
