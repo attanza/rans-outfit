@@ -108,7 +108,7 @@ export default {
           short_description: this.short_description,
           long_description: this.long_description
         };
-        if (this.id) {
+        if (this.id != "") {
           const resp = await axios
             .put(`${PRODUCT_DESCRIPTION_URL}/${this.id}`, postData)
             .then(res => res.data);

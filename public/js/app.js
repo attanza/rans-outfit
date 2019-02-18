@@ -3752,7 +3752,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   long_description: this.long_description
                 };
 
-                if (!this.id) {
+                if (!(this.id != "")) {
                   _context2.next = 9;
                   break;
                 }
@@ -63790,10 +63790,10 @@ function showNoty(text, type) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /home/danidan/Projects/rans/web/resources/assets/js/app.js */"./resources/assets/js/app.js");
-__webpack_require__(/*! /home/danidan/Projects/rans/web/node_modules/noty/src/noty.scss */"./node_modules/noty/src/noty.scss");
-__webpack_require__(/*! /home/danidan/Projects/rans/web/node_modules/noty/src/themes/metroui.scss */"./node_modules/noty/src/themes/metroui.scss");
-module.exports = __webpack_require__(/*! /home/danidan/Projects/rans/web/resources/assets/styl/app.styl */"./resources/assets/styl/app.styl");
+__webpack_require__(/*! /Users/danidan/Works/Projects/rans-outfit/resources/assets/js/app.js */"./resources/assets/js/app.js");
+__webpack_require__(/*! /Users/danidan/Works/Projects/rans-outfit/node_modules/noty/src/noty.scss */"./node_modules/noty/src/noty.scss");
+__webpack_require__(/*! /Users/danidan/Works/Projects/rans-outfit/node_modules/noty/src/themes/metroui.scss */"./node_modules/noty/src/themes/metroui.scss");
+module.exports = __webpack_require__(/*! /Users/danidan/Works/Projects/rans-outfit/resources/assets/styl/app.styl */"./resources/assets/styl/app.styl");
 
 
 /***/ })
