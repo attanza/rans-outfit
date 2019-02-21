@@ -23,7 +23,7 @@ class HomeController {
       .limit(12)
       .fetch();
     const parsed = products.toJSON();
-    // await RedisHelper.set(redisKey, parsed);
+    await RedisHelper.set(redisKey, parsed);
     return view.render("home.index", {
       products: parsed
     });

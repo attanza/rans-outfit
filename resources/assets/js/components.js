@@ -3,6 +3,7 @@ import Loader from "./components/Loader";
 import Dialog from "./components/Dialog";
 
 import { Login } from "./components/auth";
+import ContactUs from "./components/ContactUs";
 import {
   list as ProductList,
   detail as ProductDetail,
@@ -18,5 +19,6 @@ export {
   ProductDetail,
   ProductForm,
   Dialog,
-  ProductCard
+  ProductCard,
+  ContactUs
 };
