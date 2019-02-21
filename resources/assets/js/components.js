@@ -1,7 +1,7 @@
 import MainNav from "./components/MainNav";
 import Loader from "./components/Loader";
 import Dialog from "./components/Dialog";
-
+import SideNav from "./components/SideNav";
 import { Login } from "./components/auth";
 import ContactUs from "./components/ContactUs";
 import {
@@ -20,5 +20,6 @@ export {
   ProductForm,
   Dialog,
   ProductCard,
-  ContactUs
+  ContactUs,
+  SideNav
 };

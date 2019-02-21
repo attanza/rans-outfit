@@ -4,6 +4,7 @@ Route.group(() => {
   Route.post("login", "AuthController.login");
 
   Route.get("get-featured", "FrontEndController.getFeaturedProducts");
+  Route.get("combo-data", "ComboDataController.index");
 })
   .prefix("api/v1")
   .namespace("Api");
@@ -11,8 +12,6 @@ Route.group(() => {
 Route.group(() => {
   Route.post("logout", "AuthController.logout");
   Route.get("me", "AuthController.me");
-
-  Route.get("combo-data", "ComboDataController.index");
 
   Route.resource("products", "ProductController")
     .apiOnly()
