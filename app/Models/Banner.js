@@ -15,6 +15,7 @@ class Banner extends Model {
       if (splitUrl && (splitUrl[0] === "http" || splitUrl[0] === "https")) {
         return this.url;
       }
+      console.log(GetBaseUrl());
       return `${GetBaseUrl()}/${this.url}`;
     } else return "";
   }

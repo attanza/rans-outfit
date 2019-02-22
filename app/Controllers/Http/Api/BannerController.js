@@ -61,9 +61,9 @@ class BannerController {
         .paginate(page, limit);
 
       let parsed = ResponseParser.apiCollection(data.toJSON());
-      if (!search || search == "") {
-        await RedisHelper.set(redisKey, parsed);
-      }
+      // if (!search || search == "") {
+      //   await RedisHelper.set(redisKey, parsed);
+      // }
       return response.status(200).send(parsed);
     } catch (e) {
       ErrorLog(request, e);
