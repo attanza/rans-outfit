@@ -105,6 +105,23 @@ Route.group(() => {
         [["product-categories.destroy"], ["can:delete-product-category"]]
       ])
     );
+
+  Route.resource("banners", "BannerController")
+    .apiOnly()
+    .validator(
+      new Map([
+        [["banners.store"], ["StoreBanner"]],
+        [["banners.update"], ["UpdateBanner"]]
+      ])
+    )
+    .middleware(
+      new Map([
+        [["banners.index"], ["can:read-banner"]],
+        [["banners.store"], ["can:create-banner"]],
+        [["banners.update"], ["can:update-banner"]],
+        [["banners.destroy"], ["can:delete-banner"]]
+      ])
+    );
 })
   .prefix("api/v1")
   .namespace("Api")

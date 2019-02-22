@@ -15,7 +15,7 @@ database/development.sqlite
 .history
 .idea
 
-public/img
+public/images
 
 # General
 .DS_Store

@@ -7,23 +7,26 @@ import ContactUs from "./components/ContactUs";
 import {
   list as ProductList,
   detail as ProductDetail,
-  createForm as ProductForm,
+  createForm as CreateProductForm,
   productCard as ProductCard
-} from "./components/products";
+} from "./components/products/index";
+
+import { list as BannerList } from "./components/banners";
 
 import { list as ProductCategoryList } from "./components/productCategories";
-import Products from "./components/Products";
+import FrontProducts from "./components/FrontProducts";
 export {
   MainNav,
   ProductList,
   Loader,
   Login,
   ProductDetail,
-  ProductForm,
+  CreateProductForm,
   Dialog,
   ProductCard,
   ContactUs,
   SideNav,
   ProductCategoryList,
-  Products
+  FrontProducts,
+  BannerList
 };

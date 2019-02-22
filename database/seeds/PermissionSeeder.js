@@ -14,7 +14,8 @@ const resources = [
   "Product Category",
   "Product Shipping",
   "Product Attribute",
-  "Product Material"
+  "Product Material",
+  "Banner"
 ];
 const actions = ["Read", "Create", "Update", "Delete"];
 

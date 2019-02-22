@@ -12,6 +12,7 @@ Route.group(() => {
 
   Route.resource("products", "ProductController");
   Route.resource("product-categories", "ProductCategoryController");
+  Route.resource("banners", "BannerController");
 })
   .middleware("auth")
   .prefix("admin")

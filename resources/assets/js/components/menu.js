@@ -26,8 +26,13 @@ export const adminItems = [
   // },
   {
     title: "Product Category",
-    icon: "apps",
+    icon: "bookmarks",
     to: "/admin/product-categories"
+  },
+  {
+    title: "Banners",
+    icon: "announcement",
+    to: "/admin/banners"
   },
 
   {
