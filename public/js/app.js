@@ -3035,7 +3035,7 @@ __webpack_require__.r(__webpack_exports__);
     getCategory: function getCategory() {
       var _this = this;
 
-      axios.get(_utils_apis_js__WEBPACK_IMPORTED_MODULE_0__["COMBO_DATA_URL"] + "?resource=ProductCategory").then(function (res) {
+      axios.get(_utils_apis_js__WEBPACK_IMPORTED_MODULE_0__["COMBO_DATA_URL"] + "?resource=ProductCategory&sort_by=name").then(function (res) {
         if (res.status === 200) {
           _this.categories = res.data.data;
         }

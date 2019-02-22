@@ -34,7 +34,7 @@ export default {
   methods: {
     getCategory() {
       axios
-        .get(COMBO_DATA_URL + "?resource=ProductCategory")
+        .get(COMBO_DATA_URL + "?resource=ProductCategory&sort_by=name")
         .then(res => {
           if (res.status === 200) {
             this.categories = res.data.data;
