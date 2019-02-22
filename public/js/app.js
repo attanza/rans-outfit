@@ -3131,7 +3131,6 @@ __webpack_require__.r(__webpack_exports__);
       axios.get(_utils_apis_js__WEBPACK_IMPORTED_MODULE_0__["FRONT_BANNER_URL"]).then(function (res) {
         if (res.status === 200) {
           _this.sliders = res.data;
-          console.log("this.sliders", _this.sliders);
         }
       }).catch(function (e) {
         return console.log("e", e);
@@ -3636,6 +3635,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     setFields: function setFields() {
       var _this = this;
 
+      this.formData = {};
       this.fillable.forEach(function (data) {
         return _this.formData[data.key] = data.value;
       });
@@ -7170,7 +7170,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.slider-flex[data-v-574c3bee] {\n  font-family: \"Raleway\", sans-serif;\n  height: 100%;\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n}\n", ""]);
+exports.push([module.i, "\n.slider-flex[data-v-574c3bee] {\n  font-family: \"Raleway\", sans-serif;\n  margin-bottom: 30px;\n}\n@media (min-width: 1024px) {\n.slider-flex[data-v-574c3bee] {\n    height: 100%;\n    display: flex;\n    flex-direction: column;\n    justify-content: center;\n}\n}\n", ""]);
 
 // exports
 

@@ -184,6 +184,7 @@ export default {
       this.$emit("onClose");
     },
     setFields() {
+      this.formData = {};
       this.fillable.forEach(data => (this.formData[data.key] = data.value));
       this.errors.clear();
       if (this.isEdit && this.dataToEdit) {

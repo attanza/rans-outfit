@@ -47,7 +47,6 @@ export default {
         .then(res => {
           if (res.status === 200) {
             this.sliders = res.data;
-            console.log("this.sliders", this.sliders);
           }
         })
         .catch(e => console.log("e", e));
@@ -58,9 +57,14 @@ export default {
 <style scoped>
 .slider-flex {
   font-family: "Raleway", sans-serif;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  margin-bottom: 30px;
+}
+@media (min-width: 1024px) {
+  .slider-flex {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 }
 </style>
