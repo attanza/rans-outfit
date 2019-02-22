@@ -86,6 +86,23 @@ Route.group(() => {
         [["product-medias.destroy"], ["can:delete-product-media"]]
       ])
     );
+
+  Route.resource("product-categories", "ProductCategoryController")
+    .apiOnly()
+    .validator(
+      new Map([
+        [["product-categories.store"], ["StoreProductCategory"]],
+        [["product-categories.update"], ["UpdateProductCategory"]]
+      ])
+    )
+    .middleware(
+      new Map([
+        [["product-categories.index"], ["can:read-product-category"]],
+        [["product-categories.store"], ["can:create-product-category"]],
+        [["product-categories.update"], ["can:update-product-category"]],
+        [["product-categories.destroy"], ["can:delete-product-category"]]
+      ])
+    );
 })
   .prefix("api/v1")
   .namespace("Api")

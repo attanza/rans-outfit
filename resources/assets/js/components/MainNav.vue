@@ -51,13 +51,13 @@
         <v-menu origin="center center" transition="scale-transition" bottom>
           <v-btn slot="activator" icon large>
             <v-avatar>
-              <img src="/img/user.png">
+              <img src="/images/user.png">
             </v-avatar>
           </v-btn>
           <v-list>
             <v-list-tile avatar color="primary">
               <v-list-tile-avatar>
-                <v-img src="/img/user.png" aspect-ratio="1"/>
+                <v-img src="/images/user.png" aspect-ratio="1"/>
               </v-list-tile-avatar>
               <v-list-tile-content>
                 <!-- <v-list-tile-title v-html="user.name"/>

@@ -25,6 +25,12 @@ export const adminItems = [
   //   ]
   // },
   {
+    title: "Product Category",
+    icon: "apps",
+    to: "/admin/product-categories"
+  },
+
+  {
     title: "Products",
     icon: "apps",
     to: "/admin/products"

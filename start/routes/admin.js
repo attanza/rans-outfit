@@ -11,6 +11,7 @@ Route.group(() => {
   });
 
   Route.resource("products", "ProductController");
+  Route.resource("product-categories", "ProductCategoryController");
 })
   .middleware("auth")
   .prefix("admin")

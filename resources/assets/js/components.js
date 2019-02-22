@@ -11,6 +11,8 @@ import {
   productCard as ProductCard
 } from "./components/products";
 
+import { list as ProductCategoryList } from "./components/productCategories";
+
 export {
   MainNav,
   ProductList,
@@ -21,5 +23,6 @@ export {
   Dialog,
   ProductCard,
   ContactUs,
-  SideNav
+  SideNav,
+  ProductCategoryList
 };

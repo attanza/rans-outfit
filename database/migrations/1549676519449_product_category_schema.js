@@ -8,6 +8,7 @@ class ProductCategorySchema extends Schema {
     this.create("product_categories", table => {
       table.increments();
       table.string("name", 50).index();
+      table.string("slug", 100).index();
       table.integer("parent_id");
       table.string("description");
       table.timestamps();

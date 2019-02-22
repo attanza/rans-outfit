@@ -14,10 +14,11 @@ mix
     ],
     "public/js/vendor.js"
   )
-  .sass("node_modules/noty/src/noty.scss", "public/css")
-  .sass("node_modules/noty/src/themes/metroui.scss", "public/css")
-  .stylus("resources/assets/styl/app.styl", "public/css")
-  .styles(["resources/assets/css/custom.css"], "public/css/custom.css")
+  .stylus("resources/assets/styl/app.styl", "public/css/app.css")
+  .combine(
+    ["public/css/noty.css", "public/css/metroui.css"],
+    "public/css/admin.css"
+  )
   .combine(
     [
       "public/css/bootstrap.min.css",
@@ -28,5 +29,5 @@ mix
       "public/css/responsive.css",
       "public/css/main.css"
     ],
-    "public/css/all.css"
+    "public/css/vendor.css"
   );
