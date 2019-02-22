@@ -12,7 +12,7 @@ import {
 } from "./components/products";
 
 import { list as ProductCategoryList } from "./components/productCategories";
-
+import Products from "./components/Products";
 export {
   MainNav,
   ProductList,
@@ -24,5 +24,6 @@ export {
   ProductCard,
   ContactUs,
   SideNav,
-  ProductCategoryList
+  ProductCategoryList,
+  Products
 };

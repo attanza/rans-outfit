@@ -132,6 +132,7 @@ export default {
             this.$emit("onAdd", resp.data);
           }
         }
+        this.clearForm();
         this.deactivateLoader();
       } catch (e) {
         this.deactivateLoader();

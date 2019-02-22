@@ -5,6 +5,8 @@ Route.group(() => {
 
   Route.get("get-featured", "FrontEndController.getFeaturedProducts");
   Route.get("combo-data", "ComboDataController.index");
+
+  Route.get("front-products", "FrontProductController.getProducts");
 })
   .prefix("api/v1")
   .namespace("Api");

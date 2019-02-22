@@ -74,7 +74,7 @@ class ProductCategoryCategoryController {
       let parsed = ResponseParser.apiCreated(data.toJSON());
       await RedisHelper.delete("ProductCategory_*");
       await RedisHelper.delete("Product_*");
-
+      await RedisHelper.delete("ComboData_*");
       return response.status(201).send(parsed);
     } catch (e) {
       ErrorLog(request, e);
@@ -98,7 +98,7 @@ class ProductCategoryCategoryController {
       await data.save();
       await RedisHelper.delete("ProductCategory_*");
       await RedisHelper.delete("Product_*");
-
+      await RedisHelper.delete("ComboData_*");
       let parsed = ResponseParser.apiUpdated(data.toJSON());
       return response.status(200).send(parsed);
     } catch (e) {
@@ -120,7 +120,7 @@ class ProductCategoryCategoryController {
       }
       await RedisHelper.delete("ProductCategory_*");
       await RedisHelper.delete("Product_*");
-
+      await RedisHelper.delete("ComboData_*");
       await data.delete();
       return response.status(200).send(ResponseParser.apiDeleted());
     } catch (e) {

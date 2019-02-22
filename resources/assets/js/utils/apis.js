@@ -1,4 +1,5 @@
 export const PRODUCT_URL = "/api/v1/products";
+export const FRONT_PRODUCT_URL = "/api/v1/front-products";
 export const PRODUCT_DESCRIPTION_URL = "/api/v1/product-descriptions";
 export const PRODUCT_ATTRIBUTE_URL = "/api/v1/product-attributes";
 export const PRODUCT_MEDIA_URL = "/api/v1/product-medias";
