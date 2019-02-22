@@ -3512,11 +3512,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utils_apis__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../utils/apis */ "./resources/assets/js/utils/apis.js");
 /* harmony import */ var _mixins__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../mixins */ "./resources/assets/js/mixins/index.js");
 /* harmony import */ var _dform__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./dform */ "./resources/assets/js/components/productCategories/dform.vue");
-/* harmony import */ var _utils_catchError__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../utils/catchError */ "./resources/assets/js/utils/catchError.js");
-/* harmony import */ var lodash_debounce__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! lodash/debounce */ "./node_modules/lodash/debounce.js");
-/* harmony import */ var lodash_debounce__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(lodash_debounce__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var lodash_findIndex__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! lodash/findIndex */ "./node_modules/lodash/findIndex.js");
-/* harmony import */ var lodash_findIndex__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(lodash_findIndex__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _Dialog__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../Dialog */ "./resources/assets/js/components/Dialog.vue");
+/* harmony import */ var _utils_catchError__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../utils/catchError */ "./resources/assets/js/utils/catchError.js");
+/* harmony import */ var lodash_debounce__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! lodash/debounce */ "./node_modules/lodash/debounce.js");
+/* harmony import */ var lodash_debounce__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(lodash_debounce__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var lodash_findIndex__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! lodash/findIndex */ "./node_modules/lodash/findIndex.js");
+/* harmony import */ var lodash_findIndex__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(lodash_findIndex__WEBPACK_IMPORTED_MODULE_7__);
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -3572,6 +3573,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
@@ -3580,7 +3598,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
-    dform: _dform__WEBPACK_IMPORTED_MODULE_3__["default"]
+    dform: _dform__WEBPACK_IMPORTED_MODULE_3__["default"],
+    Dialog: _Dialog__WEBPACK_IMPORTED_MODULE_4__["default"]
   },
   mixins: [_mixins__WEBPACK_IMPORTED_MODULE_2__["global"]],
   data: function data() {
@@ -3594,6 +3613,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         text: "Description",
         value: "description",
         align: "left"
+      }, {
+        text: "",
+        value: "",
+        align: "center",
+        sortable: false
       }],
       items: [],
       showForm: false,
@@ -3603,7 +3627,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   watch: {
     pagination: {
-      handler: lodash_debounce__WEBPACK_IMPORTED_MODULE_5___default()(function () {
+      handler: lodash_debounce__WEBPACK_IMPORTED_MODULE_6___default()(function () {
         this.pupulateTable();
       }, 500),
       deep: true
@@ -3664,7 +3688,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 _context.prev = 15;
                 _context.t0 = _context["catch"](0);
                 this.deactivateLoader();
-                Object(_utils_catchError__WEBPACK_IMPORTED_MODULE_4__["default"])(_context.t0);
+                Object(_utils_catchError__WEBPACK_IMPORTED_MODULE_5__["default"])(_context.t0);
 
               case 19:
               case "end":
@@ -3684,6 +3708,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.showForm = false;
       this.isEdit = false;
       this.dataToEdit = {};
+      this.showDialog = false;
     },
     addData: function addData(data) {
       this.items.unshift(data);
@@ -3695,7 +3720,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.showForm = true;
     },
     editData: function editData(data) {
-      var index = lodash_findIndex__WEBPACK_IMPORTED_MODULE_6___default()(this.items, function (item) {
+      var index = lodash_findIndex__WEBPACK_IMPORTED_MODULE_7___default()(this.items, function (item) {
         return item.id === data.id;
       });
 
@@ -3704,6 +3729,34 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
 
       this.onClose();
+    },
+    showConfirm: function showConfirm(data) {
+      this.showDialog = true;
+      this.dataToEdit = data;
+    },
+    removeData: function removeData() {
+      var _this = this;
+
+      try {
+        this.activateLoader();
+        axios.delete(_utils_apis__WEBPACK_IMPORTED_MODULE_1__["PRODUCT_CATEGORY_URL"] + "/" + this.dataToEdit.id).then(function (resp) {
+          if (resp.status === 200) {
+            var index = lodash_findIndex__WEBPACK_IMPORTED_MODULE_7___default()(_this.items, function (item) {
+              return item.id == _this.dataToEdit.id;
+            });
+
+            _this.items.splice(index, 1);
+
+            Object(_utils_catchError__WEBPACK_IMPORTED_MODULE_5__["showNoty"])("Data deleted", "success");
+
+            _this.onClose();
+          }
+        });
+        this.deactivateLoader();
+      } catch (e) {
+        this.deactivateLoader();
+        Object(_utils_catchError__WEBPACK_IMPORTED_MODULE_5__["default"])(e);
+      }
     }
   }
 });
@@ -25604,7 +25657,29 @@ var render = function() {
                       )
                     ]),
                     _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(props.item.description))])
+                    _c("td", [_vm._v(_vm._s(props.item.description))]),
+                    _vm._v(" "),
+                    _c(
+                      "td",
+                      { staticClass: "justify-center layout px-0" },
+                      [
+                        _c("Tbtn", {
+                          attrs: {
+                            "tooltip-text": "Delete",
+                            "icon-mode": "",
+                            flat: "",
+                            color: "primary",
+                            icon: "delete"
+                          },
+                          on: {
+                            onClick: function($event) {
+                              return _vm.showConfirm(props.item)
+                            }
+                          }
+                        })
+                      ],
+                      1
+                    )
                   ]
                 }
               }
@@ -25621,6 +25696,19 @@ var render = function() {
           "data-to-edit": _vm.dataToEdit
         },
         on: { onClose: _vm.onClose, onAdd: _vm.addData, onEdit: _vm.editData }
+      }),
+      _vm._v(" "),
+      _c("Dialog", {
+        attrs: {
+          showDialog: _vm.showDialog,
+          text: "Are you sure want to delete ?"
+        },
+        on: {
+          onClose: function($event) {
+            _vm.showDialog = false
+          },
+          onConfirmed: _vm.removeData
+        }
       })
     ],
     1
@@ -68857,11 +68945,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _components_Noty__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/Noty */ "./resources/assets/js/components/Noty.vue");
 /* harmony import */ var _components_Tbtn__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/Tbtn */ "./resources/assets/js/components/Tbtn.vue");
-/* harmony import */ var export_to_csv__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! export-to-csv */ "./node_modules/export-to-csv/build/index.js");
-/* harmony import */ var export_to_csv__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(export_to_csv__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _components_Dialog__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/Dialog */ "./resources/assets/js/components/Dialog.vue");
+/* harmony import */ var export_to_csv__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! export-to-csv */ "./node_modules/export-to-csv/build/index.js");
+/* harmony import */ var export_to_csv__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(export_to_csv__WEBPACK_IMPORTED_MODULE_5__);
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 
@@ -68877,6 +68967,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     return {
       loading: false,
       showForm: false,
+      showDialog: false,
       totalItems: 0,
       search: "",
       rowsPerPage: [10, 25, 50, 100],
@@ -68936,7 +69027,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       };
 
       if (data.length) {
-        var csvExporter = new export_to_csv__WEBPACK_IMPORTED_MODULE_4__["ExportToCsv"](options);
+        var csvExporter = new export_to_csv__WEBPACK_IMPORTED_MODULE_5__["ExportToCsv"](options);
         csvExporter.generateCsv(data);
       }
     },

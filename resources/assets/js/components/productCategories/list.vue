@@ -34,6 +34,16 @@
             <a @click="toDetail(props.item)">{{ props.item.name }}</a>
           </td>
           <td>{{ props.item.description }}</td>
+          <td class="justify-center layout px-0">
+            <Tbtn
+              :tooltip-text="'Delete'"
+              icon-mode
+              flat
+              color="primary"
+              icon="delete"
+              @onClick="showConfirm(props.item)"
+            />
+          </td>
         </template>
       </v-data-table>
     </v-card>
@@ -45,23 +55,31 @@
       :is-edit="isEdit"
       :data-to-edit="dataToEdit"
     />
+    <Dialog
+      :showDialog="showDialog"
+      text="Are you sure want to delete ?"
+      @onClose="showDialog = false"
+      @onConfirmed="removeData"
+    />
   </div>
 </template>
 <script>
 import { PRODUCT_CATEGORY_URL } from "../../utils/apis";
 import { global } from "../../mixins";
 import dform from "./dform";
-import catchError from "../../utils/catchError";
+import Dialog from "../Dialog";
+import catchError, { showNoty } from "../../utils/catchError";
 import debounce from "lodash/debounce";
 import findIndex from "lodash/findIndex";
 export default {
-  components: { dform },
+  components: { dform, Dialog },
   mixins: [global],
   data: () => ({
     title: "Product Category",
     headers: [
       { text: "Name", value: "name", align: "left" },
-      { text: "Description", value: "description", align: "left" }
+      { text: "Description", value: "description", align: "left" },
+      { text: "", value: "", align: "center", sortable: false }
     ],
     items: [],
     showForm: false,
@@ -120,6 +138,7 @@ export default {
       this.showForm = false;
       this.isEdit = false;
       this.dataToEdit = {};
+      this.showDialog = false;
     },
     addData(data) {
       this.items.unshift(data);
@@ -138,6 +157,32 @@ export default {
         this.items.splice(index, 1, data);
       }
       this.onClose();
+    },
+    showConfirm(data) {
+      this.showDialog = true;
+      this.dataToEdit = data;
+    },
+    removeData() {
+      try {
+        this.activateLoader();
+        axios
+          .delete(PRODUCT_CATEGORY_URL + "/" + this.dataToEdit.id)
+          .then(resp => {
+            if (resp.status === 200) {
+              let index = findIndex(
+                this.items,
+                item => item.id == this.dataToEdit.id
+              );
+              this.items.splice(index, 1);
+              showNoty("Data deleted", "success");
+              this.onClose();
+            }
+          });
+        this.deactivateLoader();
+      } catch (e) {
+        this.deactivateLoader();
+        catchError(e);
+      }
     }
   }
 };

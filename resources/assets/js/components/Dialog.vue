@@ -39,6 +39,7 @@ export default {
       }
     }
   },
+
   methods: {
     onClose() {
       this.$emit("onClose");

@@ -2,6 +2,7 @@ import changeCase from "change-case";
 import { mapState } from "vuex";
 import Noty from "../components/Noty";
 import Tbtn from "../components/Tbtn";
+import Dialog from "../components/Dialog";
 import { ExportToCsv } from "export-to-csv";
 
 export default {
@@ -10,6 +11,7 @@ export default {
     return {
       loading: false,
       showForm: false,
+      showDialog: false,
       totalItems: 0,
       search: "",
       rowsPerPage: [10, 25, 50, 100],
