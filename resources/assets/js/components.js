@@ -15,6 +15,8 @@ import { list as BannerList } from "./components/banners";
 
 import { list as ProductCategoryList } from "./components/productCategories";
 import FrontProducts from "./components/FrontProducts";
+import ProductSlider from "./components/ProductSlider";
+
 export {
   MainNav,
   ProductList,
@@ -28,5 +30,6 @@ export {
   SideNav,
   ProductCategoryList,
   FrontProducts,
-  BannerList
+  BannerList,
+  ProductSlider
 };

@@ -1,6 +1,7 @@
 "use strict";
 
 const Product = use("App/Models/Product");
+const Banner = use("App/Models/Banner");
 const { RedisHelper } = use("App/Helpers");
 
 class FrontEndController {
@@ -8,7 +9,6 @@ class FrontEndController {
     const redisKey = "Product_Featured";
     const cache = await RedisHelper.get(redisKey);
     if (cache) {
-      console.log("from cache");
       return cache;
     }
     const products = await Product.query()
@@ -23,6 +23,17 @@ class FrontEndController {
       .where("stock_status_id", 1)
       .limit(12)
       .fetch();
+    await RedisHelper.set(redisKey, products.toJSON());
+    return response.status(200).send(products.toJSON());
+  }
+
+  async getSliders({ response }) {
+    const redisKey = "Banner_Front";
+    const cache = await RedisHelper.get(redisKey);
+    if (cache) {
+      return cache;
+    }
+    const products = await Banner.all();
     await RedisHelper.set(redisKey, products.toJSON());
     return response.status(200).send(products.toJSON());
   }
