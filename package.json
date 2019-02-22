@@ -44,6 +44,7 @@
     "noty": "^3.2.0-beta",
     "redis-delete-pattern": "^0.1.0",
     "short-unique-id": "^1.1.1",
+    "vue-carousel": "^0.18.0-alpha",
     "vuex": "^3.1.0"
   },
   "devDependencies": {

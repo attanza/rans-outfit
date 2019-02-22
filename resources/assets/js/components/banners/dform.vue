@@ -29,6 +29,7 @@
                     :name="f.key"
                     :data-vv-name="f.key"
                     :data-vv-as="f.caption"
+                    counter="250"
                   />
                 </div>
                 <div v-if="f.key === 'start_date'">
@@ -147,7 +148,12 @@ export default {
           value: null,
           rules: ""
         },
-        { key: "description", caption: "Description", value: "", rules: "" }
+        {
+          key: "description",
+          caption: "Description",
+          value: "",
+          rules: "max:250"
+        }
       ],
       notIncluded: ["description", "start_date", "end_date"],
       formData: {},

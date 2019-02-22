@@ -4,38 +4,19 @@
     <div class="container">
       <div class="row">
         <div class="col-sm-12">
-          <div id="slider-carousel" class="carousel slide" data-ride="carousel">
-            <ol class="carousel-indicators">
-              <li data-target="#slider-carousel" data-slide-to="0" class="active"></li>
-              <li data-target="#slider-carousel" data-slide-to="1"></li>
-              <li data-target="#slider-carousel" data-slide-to="2"></li>
-            </ol>
-
-            <div class="carousel-inner">
-              <div
-                :class="{'item': true, 'active': index == 0}"
-                v-for="(slider, index) in sliders"
-                :key="slider.id"
-              >
-                <div class="col-sm-6">
-                  <h1>{{ slider.title }}</h1>
-                  <h2>{{ slider.small_title }}</h2>
-                  <p>{{ slider.description }}</p>
-                  <button type="button" class="btn btn-default get">Get it now</button>
-                </div>
-                <div class="col-sm-6">
-                  <img :src="slider.url" class="girl img-responsive" alt>
-                </div>
+          <carousel :autoplay="true" :perPage="perPage" :loop="true" :autoplayTimeout="4000">
+            <slide v-for="slider in sliders" :key="slider.id">
+              <div class="col-sm-6 slider-flex">
+                <h1>{{ slider.title }}</h1>
+                <h3 style="color: #f5696a">{{ slider.small_title }}</h3>
+                <p style="margin-top: 2rem;">{{ slider.description }}</p>
+                <!-- <button type="button" class="btn btn-default get">Get it now</button> -->
               </div>
-            </div>
-
-            <a href="#slider-carousel" class="left control-carousel hidden-xs" data-slide="prev">
-              <i class="fa fa-angle-left"></i>
-            </a>
-            <a href="#slider-carousel" class="right control-carousel hidden-xs" data-slide="next">
-              <i class="fa fa-angle-right"></i>
-            </a>
-          </div>
+              <div class="col-sm-6">
+                <img :src="slider.url" class="girl img-responsive" alt>
+              </div>
+            </slide>
+          </carousel>
         </div>
       </div>
     </div>
@@ -43,10 +24,17 @@
 </template>
 <script>
 import { FRONT_BANNER_URL } from "../utils/apis.js";
+import { Carousel, Slide } from "vue-carousel";
+
 export default {
+  components: {
+    Carousel,
+    Slide
+  },
   data() {
     return {
-      sliders: []
+      sliders: [],
+      perPage: 1
     };
   },
   mounted() {
@@ -67,3 +55,12 @@ export default {
   }
 };
 </script>
+<style scoped>
+.slider-flex {
+  font-family: "Raleway", sans-serif;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+</style>

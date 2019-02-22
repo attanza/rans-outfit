@@ -5,7 +5,7 @@ import axios from "axios";
 import * as components from "./components";
 import store from "./store";
 import CKEditor from "@ckeditor/ckeditor5-vue";
-
+import VueCarousel from "vue-carousel";
 window.Vue = Vue;
 
 window.axios = axios;
@@ -25,6 +25,8 @@ Vue.use(VeeValidate);
 Vue.use(Vuetify);
 
 Vue.use(CKEditor);
+
+Vue.use(VueCarousel);
 
 Vue.prototype.$bus = new Vue();
 

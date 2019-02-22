@@ -12,7 +12,7 @@ class StoreBanner {
       is_publish: "boolean",
       start_date: "date",
       end_date: "date",
-      description: "string|max:250"
+      description: "string|max:300"
     };
   }
 
