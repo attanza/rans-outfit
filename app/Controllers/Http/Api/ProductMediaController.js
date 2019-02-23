@@ -100,18 +100,18 @@ class ProductMediaController {
             .send(ResponseParser.errorResponse("Photo is not an image file"));
         }
         const name = `${new Date().getTime()}.${photo.subtype}`;
-        await photo.move(Helpers.publicPath("img/products"), { name });
+        await photo.move(Helpers.publicPath("images/products"), { name });
         if (!photo.moved()) {
           return response
             .status(400)
             .send(ResponseParser.errorResponse("Photo failed to upload"));
         }
-        media.merge({ url: "img/products/" + name });
+        media.merge({ url: "images/products/" + name });
         await media.save();
       }
 
       await RedisHelper.delete("ProductMedia_*");
-      await RedisHelper.delete(`Product_${body.product_id}`);
+      await RedisHelper.delete("Product_*");
 
       let parsed = ResponseParser.apiCreated(media.toJSON());
       return response.status(200).send(parsed);

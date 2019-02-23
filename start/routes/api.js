@@ -6,7 +6,7 @@ Route.group(() => {
   Route.get("get-featured", "FrontEndController.getFeaturedProducts");
   Route.get("combo-data", "ComboDataController.index");
 
-  Route.get("front-products", "FrontProductController.getProducts");
+  Route.get("front-products", "FrontEndController.getProducts");
   Route.get("front-sliders", "FrontEndController.getSliders");
 })
   .prefix("api/v1")

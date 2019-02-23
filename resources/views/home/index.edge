@@ -1,4 +1,9 @@
   @layout('layouts.home')
   @section('content')
-<front-products></front-products>
+  <h1>Category: {{ category }}</h1>
+@if(category && category != '')
+<front-products title="Ran's Outf'ts" category="{{ category }}"></front-products>
+@else
+<front-products title="Ran's Outf'ts"></front-products>
+@endif
   @endsection
