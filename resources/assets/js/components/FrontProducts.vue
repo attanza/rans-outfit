@@ -73,7 +73,6 @@ export default {
         .then(res => {
           if (res.status === 200) {
             this.products = res.data.data;
-            console.log("this.products", this.products);
           }
         })
         .catch(e => {

@@ -2763,7 +2763,6 @@ __webpack_require__.r(__webpack_exports__);
       axios.get("".concat(_utils_apis_js__WEBPACK_IMPORTED_MODULE_0__["FRONT_PRODUCT_URL"], "?category=").concat(this.category)).then(function (res) {
         if (res.status === 200) {
           _this.products = res.data.data;
-          console.log("this.products", _this.products);
         }
       }).catch(function (e) {
         Object(_utils_catchError__WEBPACK_IMPORTED_MODULE_1__["default"])(e);
